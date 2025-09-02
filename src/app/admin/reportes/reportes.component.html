@@ -1,0 +1,1459 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Registrar Datos del personal: {{personal}}</h4>
+        <h6 class="card-subtitle">Por favor seleccione una opcion para ingresar sus datos</h6>
+        <div class="row">
+          <div class="col-lg-6 mb-4">
+            <button type="button" class="btn waves-effect waves-light btn-lg btn-block btn-primary" data-toggle="modal"
+              data-target="#modalRecordLaboral">
+              <i class="fa fa-user-graduate"></i>
+              Registrar Record Laboral</button>
+          </div>
+          <div class="col-lg-6 mb-4">
+            <button type="button" class="btn waves-effect waves-light btn-lg btn-block btn-danger" data-toggle="modal"
+            data-target="#modalVacacional"><i
+                class="fa fa-umbrella"></i> Registrar Record
+              Vacacional</button>
+          </div>
+          <div class="col-lg-6 mb-4">
+            <button type="button" class="btn waves-effect waves-light btn-lg btn-block btn-secondary"
+              data-toggle="modal" data-target="#modalLicencias">
+              <i class="fa fa-truck"></i>
+              Registrar Licencias</button>
+          </div>
+          <div class="col-lg-6 mb-4">
+            <button type="button" class="btn waves-effect waves-light btn-lg btn-block btn-warning"
+            data-toggle="modal" data-target="#modalMerito"
+            ><i
+                class="fa fa-street-view"></i> Registrar
+              Merito</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Generar Reportes</h4>
+        <h6 class="card-subtitle">Por favor seleccione una opcion para generar reportes</h6>
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="form-group">
+              <select class="form-control custom-select" data-placeholder="Choose a Category" tabindex="1" (change)="filtrarOpcion($event)">
+                <option value="">Seleccionar Opcion</option>
+                <option value="1">Mostrar Record Laboral</option>
+                <option value="2">Mostrar Record Vacacional</option>
+                <option value="3">Mostrar Licencias</option>
+                <option value="4">Mostrar Merito</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <button type="button" class="btn waves-effect waves-light btn-block btn-secondary" (click)="mostrarTablas()"><i class="fa fa-eye"></i>
+              Mostrar Datos</button>
+          </div>
+          <div class="col-lg-4">
+            <button type="button" class="btn waves-effect waves-light btn-block btn-secondary" (click)="generarReporte()"><i
+                class="fa fa-file-pdf"></i> Generar Reporte</button>
+          </div>
+          <!-- Generar report de record laboral-->
+          <div class="col-lg-12 invi" id="tableRecord">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col" class="text-center">ID</th>
+                    <th scope="col" class="text-center">DOCUMENTO QUE AUTORIZA</th>
+                    <th scope="col" class="text-center">DEPENDENCIA</th>
+                    <th scope="col" class="text-center">CARGO FUNCIONAL</th>
+                    <th scope="col" class="text-center">DESDE</th>
+                    <th scope="col" class="text-center">HASTA</th>
+                    <th scope="col" class="text-center">VER DOCUMENTO</th>
+                    <th>EDITAR</th>
+                    <th>ELIMINAR</th>
+                    <th>ACTUALIZAR DOCUMENTO</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let general of listRecord" style="font-size: 15px;">
+                    <th scope="row">{{general.ids}}</th>
+                    <td class="text-center">{{general.codigo_documento}}</td>
+                    <td class="text-center">{{general.dependencia}}</td>
+                    <td class="text-center">{{general.Cargo.descripcion}}</td>
+                    <td class="text-center">{{general.inicio}}</td>
+                    <td class="text-center">{{(general.fin==='2030-12-30')?'ACTUALIDAD':general.fin}}</td>
+                    <td class="text-center">
+                      <a href="{{url}}/{{general.documento}}" class="btn btn-success" target="_blank">
+                        <i class="fa fa-eye"></i>
+                       </a>
+                    </td>
+                    <td class="text-center">
+                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalEditarRecordLaboral" data-whatever="@mdo" (click)="obtenerDatosRecordId(general.id)">
+                        <i class="fa fa-pencil-alt"></i>
+                      </button>
+                    </td>
+                    <td class="text-center">
+                      <button type="button" class="btn btn-danger" (click)="eliminarRecord(general.id)">
+                        <i class="fa fa-trash"></i>
+                      </button>
+                    </td>
+                    <td class="text-center">
+                      <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editarDocumentoLaboral" data-whatever="@mdo" (click)="obtenerIdDocumentoLaboral(general.id)">
+                        <i class="fa fa-file-pdf"></i>
+                      </button>
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Generar report de record licencia-->
+          <div class="col-lg-12 invi" id="tableLicencia">
+            <div class="table-responsive">
+              <table class="table" >
+                <thead>
+                  <tr>
+                    <th class="text-center">ID</th>
+                    <th class="text-center">DOCUMENTO QUE AUTORIZA</th>
+                    <th class="text-center">TIPO</th>
+                    <th class="text-center">DETALLE</th>
+                    <th class="text-center">N° DIAS</th>
+                    <th class="text-center">DESDE</th>
+                    <th class="text-center">HASTA</th>
+                    <th scope="col" class="text-center">VER DOCUMENTO</th>
+                    <th class="text-center">EDITAR</th>
+                    <th class="text-center">ELIMINAR</th>
+                    <th class="text-center">ACTUALIZAR DOCUMENTO</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let licencia of listLicencia" style="font-size: 15px;">
+                    <td class="text-center">{{licencia.ids}}</td>
+                    <td class="text-center">{{licencia.codigo_documento}}</td>
+                    <td class="text-center">{{licencia.DetalleLicencium.TipoLicencium.nombre}} </td>
+                    <td class="text-center">{{licencia.DetalleLicencium.nombre}} </td>
+                    <td class="text-center">{{licencia.dias}}</td>
+                    <td class="text-center">{{licencia.inicio}}</td>
+                    <td class="text-center">{{licencia.fin}}</td>
+                    <td class="text-center">
+                      <a href="{{url2}}/{{licencia.documento}}" class="btn btn-success" target="_blank">
+                        <i class="fa fa-eye"></i>
+                       </a>
+                    </td>
+                    <td class="text-center">
+                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalEditarLicencia" data-whatever="@mdo" (click)="obtenerLicenciaId(licencia.id)">
+                        <i class="fa fa-pencil-alt"></i>
+                      </button>
+                    </td>
+                    <td class="text-center">
+                      <button type="button" class="btn btn-danger" (click)="eliminarLicencia(licencia.id)" >
+                        <i class="fa fa-trash"></i>
+                      </button>
+                    </td>
+                    <td class="text-center">
+                      <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editarDocumentoLicencia" data-whatever="@mdo" (click)="obtenerIdDocumentoLicencia(licencia.id)">
+                        <i class="fa fa-file-pdf"></i>
+                      </button>
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Generar report de record vacacional-->
+          <div class="col-lg-12 invi" id="tableVacacional">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th class="text-center">ID</th>
+                    <th class="text-center">DOCUMENTO QUE AUTORIZA</th>
+                    <th class="text-center">PERIODO</th>
+                    <th class="text-center">INICIO</th>
+                    <th class="text-center">TERMINO</th>
+                    <th class="text-center">EJERCICIO EFECTIVO</th>
+                    <th class="text-center">VER DOCUMENTO</th>
+                    <th class="text-center">EDITAR</th>
+                    <th class="text-center">ELIMINAR</th>
+                    <th class="text-center">ACTUALIZAR DOCUMENTO</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let vacacional of listVacacional" style="font-size: 15px;">
+                    <td class="text-center">{{vacacional.ids}}</td>
+                    <td class="text-center">{{vacacional.codigo_documento}}</td>
+                    <td class="text-center">{{vacacional.periodo}} </td>
+                    <td class="text-center">{{vacacional.inicio}} </td>
+                    <td class="text-center">{{vacacional.termino}}</td>
+                    <td class="text-center">{{vacacional.dias}}</td>
+                    <td class="text-center">
+                      <a href="{{url4}}/{{vacacional.documento}}" class="btn btn-success" target="_blank">
+                        <i class="fas fa-eye"></i>
+                       </a>
+                    </td>
+                    <td class="text-center">
+                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalEditarVacacional" data-whatever="@mdo" (click)="obtenerVacacionalId(vacacional.id)">
+                        <i class="fa fa-pencil-alt"></i>
+                      </button>
+                    </td>
+                    <td class="text-center">
+                      <button type="button" class="btn btn-danger" (click)="eliminarVacacional(vacacional.id)">
+                        <i class="fa fa-trash"></i>
+                      </button>
+                    </td>
+                    <td class="text-center">
+                      <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editarDocumentoVacacional" data-whatever="@mdo" (click)="obtenerIdDocumentoVacacional(vacacional.id)">
+                        <i class="fa fa-file-pdf"></i>
+                      </button>
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Genrar report de record de merito -->
+          <div class="col-lg-12 invi" id="tableMerito">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th class="text-center">ID</th>
+                    <th class="text-center">DOCUMENTO QUE AUTORIZA</th>
+                    <th class="text-center">INSTANCIA</th>
+                    <th class="text-center">SANCION</th>
+                    <th class="text-center">FECHA</th>
+                    <th class="text-center">ESTADO</th>
+                    <th class="text-center">OBSERVACIONES</th>
+                    <th class="text-center">VER DOCUMENTO</th>
+                    <th class="text-center">EDITAR</th>
+                    <th class="text-center">ELIMINAR</th>
+                    <th class="text-center">ACTUALIZAR DOCUMENTO</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let merito of listMerito" style="font-size: 15px;">
+                    <td class="text-center">{{merito.ids}}</td>
+                    <td class="text-center">{{merito.codigo_documento}}</td>
+                    <td class="text-center">{{merito.instancia}} </td>
+                    <td class="text-center">{{merito.sancion}} </td>
+                    <td class="text-center">{{merito.fecha}}</td>
+                    <td class="text-center">{{merito.estado}}</td>
+                    <td class="text-center">{{merito.observacion}}</td>
+                    <td class="text-center">
+                      <a href="{{url5}}/{{merito.documento}}" class="btn btn-success" target="_blank">
+                        <i class="fas fa-eye"></i>
+                       </a>
+                    </td>
+                    <td class="text-center">
+                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalEditarMerito" data-whatever="@mdo" (click)="obtenerMeritoId(merito.id)">
+                        <i class="fa fa-pencil-alt"></i>
+                      </button>
+                    </td>
+                    <td class="text-center">
+                      <button type="button" class="btn btn-danger" (click)="eliminarMerito(merito.id)">
+                        <i class="fa fa-trash"></i>
+                      </button>
+                    </td>
+                    <td class="text-center">
+                      <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editarDocumentoMerito" data-whatever="@mdo" (click)="obtenerIdDocumentoMerito(merito.id)">
+                        <i class="fa fa-file-pdf"></i>
+                      </button>
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  -->
+
+</div>
+
+<!-- Agregar record laboral -->
+<div class="modal fade" id="modalRecordLaboral" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Registrar Record Laboral</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="generalForm">
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">GENERAR TIPO DE PERIODO</h5>
+              <hr>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de periodo:</label><br>
+                <select class="form-control custom-select" formControlName="periodo">
+                  <option value="">Seleccionar</option>
+                  <option value="1">PRINCIPAL</option>
+                  <option value="2">ENCARGO DE FUNCIONES</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">GENERAR CODIGO DE DOCUMENTO</h5>
+              <hr>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Documento:</label><br>
+                <select class="form-control custom-select" formControlName="tipodocumento">
+                  <option selected value="">Seleccionar</option>
+                  <option *ngFor="let tipodoc of listTipodocumento" value="{{tipodoc.id}}">{{tipodoc.descripcion}}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Numero:</label>
+                <input type="text" class="form-control" id="recipient-name" formControlName="numero">
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Año:</label>
+                <input type="text" class="form-control" id="recipient-name" formControlName="ano">
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Sigla:</label><br>
+                <select class="form-control custom-select" (change)="buscarSigla($event)" formControlName="tiposigla">
+                  <option value="0">Seleccionar</option>
+                  <option value="1">Organo</option>
+                  <option value="2">Unidad Organica</option>
+                  <option value="3">Area</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Area que autoriza:</label><br>
+                <select class="form-control custom-select" formControlName="autoriza">
+                  <option value="0">Seleccionar</option>
+                  <option *ngFor="let autoriza of listAutoriza" value="{{autoriza.id}}">{{autoriza.nombre}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">GENERAR DEPENDENCIA</h5>
+              <hr>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Dependecia:</label><br>
+                <select class="form-control custom-select" (change)="buscarDependencia($event)"
+                  formControlName="tipodependencia">
+                  <option selected value="">Seleccionar</option>
+                  <option value="1">Organo</option>
+                  <option value="2">Unidad Organica</option>
+                  <option value="3">Area</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Dependencia:</label><br>
+                <select class="form-control custom-select" formControlName="dependencia">
+                  <option selected value="">Seleccionar</option>
+                  <option *ngFor="let dependencia of listDependencia" value="{{dependencia.id}}">{{dependencia.nombre}}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">INGRESAR CARGO</h5>
+              <hr>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Personal:</label><br>
+                <select class="form-control custom-select" formControlName="cargo"
+                  (change)="filtrarTipoPersonal($event)">
+                  <option selected value="">Seleccionar</option>
+                  <option *ngFor="let tipopersonal of listTipoPersonal" value="{{tipopersonal.id}}">
+                    {{tipopersonal.titulo}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Cargo:</label><br>
+                <select class="form-control custom-select" formControlName="cargo">
+                  <option selected value="">Seleccionar</option>
+                  <option *ngFor="let cargo of listCargo" value="{{cargo.id}}">{{cargo.descripcion}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">INGRESAR PERIODO LABORAL</h5>
+              <hr>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Desde:</label>
+                  <input class="form-control" type="date" id="example-date-input" formControlName="desde">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Hasta:</label>
+                  <input class="form-control" type="date" id="example-date-input" formControlName="hasta">
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">INGRESAR DOCUMENTO QUE AUTORIZA
+              </h5>
+              <hr>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group validate">
+                <h5>Adjuntar Documento <span class="text-danger">*</span></h5>
+                <div class="controls">
+                  <input type="file" name="file" id="filesInput" class="form-control" required="" aria-invalid="false"
+                    #fileInput (change)="capturarFile($event)" accept="application/pdf">
+                  <div class="help-block">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelaruno()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="registrarGeneral()"
+          [disabled]="generalForm.invalid">Registrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Agregar record de licencias -->
+<div class="modal fade" id="modalLicencias" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Registrar Licencias</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="licenciaForm">
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">GENERAR CODIGO DE DOCUMENTO</h5>
+              <hr>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Documento:</label><br>
+                <select class="form-control custom-select" (change)="mostrarProveido($event)" formControlName="tipodocumento">
+                  <option value="">Seleccionar</option>
+                  <option value="1">Proveido</option>
+                  <option value="2">Resoluciones Administrativas</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12 invi" id="selectLiUno">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar el area:</label><br>
+                <select class="form-control custom-select" formControlName="areauno">
+                  <option value="">Seleccionar</option>
+                  <option value="1">PRESIDENCIA</option>
+                  <option value="2">RECURSOS HUMANOS</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12 invi" id="selectLiDos">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar el area:</label><br>
+                <select class="form-control custom-select" formControlName="areados">
+                  <option value="">Seleccionar</option>
+                  <option value="1">PRESIDENCIA</option>
+                  <option value="2">GERENCIA DE ADMINISTRACION DISTRITAL</option>
+                  <option value="3">COORDINACION DE RECURSOS HUMANOS</option>
+                  <option value="4">OFICINA DE ADMINISTRACION</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Numero:</label>
+                <input type="number" class="form-control" id="recipient-name" formControlName="numero">
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Año:</label>
+                <input type="number" class="form-control" id="recipient-name" formControlName="ano">
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">GENERAR TIPO DE LICENCIA</h5>
+              <hr>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Licencia:</label><br>
+                <select class="form-control custom-select" (change)="mostrarDetalleLicencia($event)">
+                  <option value="">Seleccionar</option>
+                  <option *ngFor="let tipo of listTipoLicencia" value="{{tipo.id}}">{{tipo.nombre}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Detalle de Licencia:</label><br>
+                <select class="form-control custom-select" formControlName="detallelicencia">
+                  <option value="">Seleccionar</option>
+                  <option *ngFor="let detalle of listDetalleLicencia" value="{{detalle.id}}">{{detalle.nombre}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">INGRESAR PERIODO DE LICENCIA</h5>
+              <hr>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Desde:</label>
+                  <input class="form-control" type="date" id="example-date-input" formControlName="inicio" >
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Hasta:</label>
+                  <input class="form-control" type="date" id="example-date-input" formControlName="fin">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">INGRESAR DOCUMENTO DE LICENCIA
+              </h5>
+              <hr>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group validate">
+                <h5>Adjuntar Documento <span class="text-danger">*</span></h5>
+                <div class="controls">
+                  <input type="file" name="file" id="filesInput" class="form-control" required="" aria-invalid="false"
+                    #fileLicencia (change)="capturarFileLicencia($event)" accept="application/pdf">
+                  <div class="help-block">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelardos()">Cancelar</button>
+          <button type="button" class="btn btn-primary" (click)="registrarLicencia()" [disabled]="licenciaForm.invalid">Registrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Agregar record vacacional -->
+<div class="modal fade" id="modalVacacional" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Registrar Record Vacacional</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="vacacionalForm">
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">GENERAR CODIGO DE DOCUMENTO</h5>
+              <hr>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Documento:</label><br>
+                <select class="form-control custom-select"
+                  (change)="mostrarTipoDocVacional($event)"
+                  formControlName="tipodocumento"
+                >
+                  <option value="">Seleccionar</option>
+                  <option value="1">Resolucion Administrativa</option>
+                  <option value="2">Memorandum</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12 invi" id="selectAreaUno">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar el area:</label><br>
+                <select class="form-control custom-select" formControlName="areauno">
+                  <option value="">Seleccionar</option>
+                  <option value="1">Presidencia</option>
+                  <option value="2">Gerencia de Administracion Distrital</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12 invi" id="selectAreaDos">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar el area:</label><br>
+                <select class="form-control custom-select" formControlName="areados">
+                  <option value="">Seleccionar</option>
+                  <option value="1">Gerencia de Administracion Distrital</option>
+                  <option value="2">Unidad de Administrativa y Finanzas</option>
+                  <option value="3">Oficina de Administracion</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Numero:</label>
+                <input type="number" class="form-control" id="recipient-name" formControlName="numero">
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Año:</label>
+                <input type="number" class="form-control" id="recipient-name" formControlName="ano">
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">INGRESAR PERIODO DE LICENCIA</h5>
+              <hr>
+            </div>
+            <div class="col-lg-5">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Desde:</label>
+                  <input class="form-control" type="date" id="example-date-input" formControlName="inicio">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Hasta:</label>
+                  <input class="form-control" type="date" id="example-date-input" formControlName="fin">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-2">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Periodo:</label>
+                  <input type="number" class="form-control" id="recipient-name" formControlName="periodo">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">INGRESAR DOCUMENTO DE LICENCIA
+              </h5>
+              <hr>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group validate">
+                <h5>Adjuntar Documento <span class="text-danger">*</span></h5>
+                <div class="controls">
+                  <input type="file" name="file" id="filesInput" class="form-control" required="" aria-invalid="false"
+                    #fileVacacional (change)="capturarFileVacacional($event)" accept="application/pdf">
+                  <div class="help-block">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelartres()">Cancelar</button>
+          <button type="button" class="btn btn-primary" (click)="registrarVacacional()" [disabled]="vacacionalForm.invalid">Registrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Editar record laboral -->
+<div class="modal fade" id="modalEditarRecordLaboral" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Editar Record Laboral</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="recordEditarForm">
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">GENERAR TIPO DE PERIODO</h5>
+              <hr>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Documento:</label><br>
+                <select class="form-control custom-select" formControlName="periodo">
+                  <option value="">Seleccionar</option>
+                  <option value="1">PRINCIPAL</option>
+                  <option value="2">ENCARGO DE FUNCIONES</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">GENERAR CODIGO DE DOCUMENTO</h5>
+              <hr>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Documento:</label><br>
+                <select class="form-control custom-select" formControlName="tipodocumento">
+                  <option selected value="">Seleccionar</option>
+                  <option *ngFor="let tipodoc of listTipodocumento" value="{{tipodoc.id}}">{{tipodoc.descripcion}}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Numero:</label>
+                <input type="text" class="form-control" id="recipient-name" formControlName="numero">
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Año:</label>
+                <input type="text" class="form-control" id="recipient-name" formControlName="ano">
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Sigla:</label><br>
+                <select class="form-control custom-select" (change)="buscarSigla($event)" formControlName="tiposigla">
+                  <option value="0">Seleccionar</option>
+                  <option value="1">Organo</option>
+                  <option value="2">Unidad Organica</option>
+                  <option value="3">Area</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Area que autoriza:</label><br>
+                <select class="form-control custom-select" formControlName="autoriza">
+                  <option value="0">Seleccionar</option>
+                  <option *ngFor="let autoriza of listAutoriza" value="{{autoriza.id}}">{{autoriza.nombre}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">GENERAR DEPENDENCIA</h5>
+              <hr>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Dependecia:</label><br>
+                <select class="form-control custom-select" (change)="buscarDependencia($event)"
+                  formControlName="tipodependencia">
+                  <option selected value="">Seleccionar</option>
+                  <option value="1">Organo</option>
+                  <option value="2">Unidad Organica</option>
+                  <option value="3">Area</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Dependencia:</label><br>
+                <select class="form-control custom-select" formControlName="dependencia">
+                  <option selected value="">Seleccionar</option>
+                  <option *ngFor="let dependencia of listDependencia" value="{{dependencia.id}}">{{dependencia.nombre}}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">INGRESAR CARGO</h5>
+              <hr>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Personal:</label><br>
+                <select class="form-control custom-select" formControlName="tipo_personal"
+                  (change)="filtrarTipoPersonal($event)">
+                  <option selected value="">Seleccionar</option>
+                  <option *ngFor="let tipopersonal of listTipoPersonal" value="{{tipopersonal.id}}">
+                    {{tipopersonal.titulo}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Cargo:</label><br>
+                <select class="form-control custom-select" formControlName="cargo">
+                  <option selected value="">Seleccionar</option>
+                  <option *ngFor="let cargo of listCargo" value="{{cargo.id}}">{{cargo.descripcion}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">INGRESAR PERIODO LABORAL</h5>
+              <hr>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Desde:</label>
+                  <input class="form-control" type="date" id="example-date-input" formControlName="desde">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Hasta:</label>
+                  <input class="form-control" type="date" id="example-date-input" formControlName="hasta">
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelaruno()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="actualizarGeneral()"
+          [disabled]="recordEditarForm.invalid">Editar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Editar record licencias -->
+<div class="modal fade" id="modalEditarLicencia" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Editar Licencias</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="licenciaEditarForm">
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">GENERAR CODIGO DE DOCUMENTO</h5>
+              <hr>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Documento:</label><br>
+                <select class="form-control custom-select" (change)="mostrarProveidoDos($event)" formControlName="tipodocumento">
+                  <option value="">Seleccionar</option>
+                  <option value="1">Proveido</option>
+                  <option value="2">Resoluciones Administrativas</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12 invi" id="selectLiUnoProv">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar el area:</label><br>
+                <select class="form-control custom-select" formControlName="areauno">
+                  <option value="">Seleccionar</option>
+                  <option value="1">PRESIDENCIA</option>
+                  <option value="2">RECURSOS HUMANOS</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12 invi" id="selectLiDosProv">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar el area:</label><br>
+                <select class="form-control custom-select" formControlName="areados">
+                  <option value="">Seleccionar</option>
+                  <option value="1">PRESIDENCIA</option>
+                  <option value="2">GERENCIA DE ADMINISTRACION DISTRITAL</option>
+                  <option value="3">COORDINACION DE RECURSOS HUMANOS</option>
+                  <option value="4">OFICINA DE ADMINISTRACION</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Numero:</label>
+                <input type="number" class="form-control" id="recipient-name" formControlName="numero">
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Año:</label>
+                <input type="number" class="form-control" id="recipient-name" formControlName="ano">
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">GENERAR TIPO DE LICENCIA</h5>
+              <hr>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Licencia:</label><br>
+                <select class="form-control custom-select" (change)="mostrarDetalleLicencia($event)" formControlName="tipo_licencia">
+                  <option value="">Seleccionar</option>
+                  <option *ngFor="let tipo of listTipoLicencia" value="{{tipo.id}}">{{tipo.nombre}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Detalle de Licencia:</label><br>
+                <select class="form-control custom-select" formControlName="detallelicencia">
+                  <option value="">Seleccionar</option>
+                  <option *ngFor="let detalle of listDetalleLicencia" value="{{detalle.id}}">{{detalle.nombre}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">INGRESAR PERIODO DE LICENCIA</h5>
+              <hr>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Desde:</label>
+                  <input class="form-control" type="date" id="example-date-input" formControlName="inicio" >
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Hasta:</label>
+                  <input class="form-control" type="date" id="example-date-input" formControlName="fin">
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelardos()">Cancelar</button>
+          <button type="button" class="btn btn-primary" (click)="editarLicencia()" [disabled]="licenciaEditarForm.invalid">Editar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Editar record vacacional -->
+<div class="modal fade" id="modalEditarVacacional" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Editar Record Vacacional</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="vacacionalEditarForm">
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">GENERAR CODIGO DE DOCUMENTO</h5>
+              <hr>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Documento:</label><br>
+                <select class="form-control custom-select" (change)="mostrarTipoDocVacionalDos($event)" formControlName="tipodocumento"
+                >
+                  <option value="">Seleccionar</option>
+                  <option value="1">Resolucion Administrativa</option>
+                  <option value="2">Memorandum</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12 " id="selectAreaUnoProv">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar el area:</label><br>
+                <select class="form-control custom-select" formControlName="areauno">
+                  <option value="">Seleccionar</option>
+                  <option value="1">PRESIDENCIA</option>
+                  <option value="2">GAD</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12" id="selectAreaDosProv">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar el area:</label><br>
+                <select class="form-control custom-select" formControlName="areados">
+                  <option value="">Seleccionar</option>
+                  <option value="1">GAD</option>
+                  <option value="2">UNIDAD DE ADMINISTRACION Y FINANZAS</option>
+                  <option value="3">OFICINA DE ADMINISTRACION</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Numero:</label>
+                <input type="number" class="form-control" id="recipient-name" formControlName="numero">
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Año:</label>
+                <input type="number" class="form-control" id="recipient-name" formControlName="ano">
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">INGRESAR PERIODO DE LICENCIA</h5>
+              <hr>
+            </div>
+            <div class="col-lg-5">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Desde:</label>
+                  <input class="form-control" type="date" id="example-date-input" formControlName="inicio">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Hasta:</label>
+                  <input class="form-control" type="date" id="example-date-input" formControlName="fin">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-2">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Periodo:</label>
+                  <input type="number" class="form-control" id="recipient-name" formControlName="periodo">
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelartres()">Cancelar</button>
+          <button type="button" class="btn btn-primary" (click)="editarVacacional()" [disabled]="vacacionalEditarForm.invalid">Editar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Editar documento vacacional -->
+<div class="modal fade" id="editarDocumentoVacacional" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Editar Documento Vacacional</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group validate">
+            <h5>Adjuntar Documento <span class="text-danger">*</span></h5>
+            <div class="controls">
+              <input type="file" name="file" id="filesInput" class="form-control" required="" aria-invalid="false"
+                #fileDocumentoVacacional (change)="capturarDocumentoVacacional($event)" accept="application/pdf">
+              <div class="help-block">
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelartres()">Cancelar</button>
+          <button type="button" class="btn btn-primary" (click)="editarDocumentoVacacional()">Editar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Editar documento laboral -->
+<div class="modal fade" id="editarDocumentoLaboral" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Editar Documento Laboral</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="col-lg-12">
+            <div class="form-group validate">
+              <h5>Adjuntar Documento <span class="text-danger">*</span></h5>
+              <div class="controls">
+                <input type="file" name="file" id="filesInput" class="form-control" required="" aria-invalid="false"
+                  #fileDocumentoLaboral (change)="capturarDocumentoLaboral($event)" accept="application/pdf">
+                <div class="help-block">
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelaruno()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="editarDocumentoLaboral()">Editar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Editar documento licencias -->
+<div class="modal fade" id="editarDocumentoLicencia" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Editar Documento Licencia</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+            <div class="form-group validate">
+              <h5>Adjuntar Documento <span class="text-danger">*</span></h5>
+              <div class="controls">
+                <input type="file" name="file" id="filesInput" class="form-control" required="" aria-invalid="false"
+                  #fileDocumentoLicencia (change)="capturarDocumentoLicencia($event)" accept="application/pdf">
+                <div class="help-block">
+                </div>
+              </div>
+            </div>
+        </form>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelardos()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="editarDocumentoLicencia()">Editar</button>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Agregar Merito -->
+<div class="modal fade" id="modalMerito" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Registrar Merito</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="meritoForm">
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">GENERAR CODIGO DE DOCUMENTO</h5>
+              <hr>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Documento:</label><br>
+                <select class="form-control custom-select" formControlName="tipodocumento">
+                  <option value="">Seleccionar</option>
+                  <option value="1">Memorandum</option>
+                  <option value="2">Oficio</option>
+                  <option value="3">Resoluciones Administrativas</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-8">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Ingresar Codigo de documento:</label><br>
+                <input type="text" class="form-control" placeholder="Ingresar codigo" formControlName="cod_documento">
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Fecha:</label>
+                  <input class="form-control" type="date" id="example-date-input" formControlName="fecha">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">REGISTRAR INSTANCIA</h5>
+              <hr>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Instancia</label><br>
+                <select class="form-control custom-select" (change)="buscarSiglaMerito($event)" formControlName="tipoinstancia">
+                  <option value="">Seleccionar</option>
+                  <option value="1">Organo</option>
+                  <option value="2">Unidad Organica</option>
+                  <option value="3">Area</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Instancia:</label><br>
+                <select class="form-control custom-select" formControlName="id_instancia">
+                  <option value="">Seleccionar</option>
+                  <option *ngFor="let instancia of listInstancia" value="{{instancia.id}}">{{instancia.nombre}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">REGISTRAR SANCION Y ESTADO</h5>
+              <hr>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Estado:</label><br>
+                <select class="form-control custom-select" formControlName="id_estado">
+                  <option value="">Seleccionar</option>
+                  <option *ngFor="let estado of listEstado" value="{{estado.id}}">{{estado.descripcion}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Sancion:</label><br>
+                <select class="form-control custom-select" formControlName="id_sancion">
+                  <option value="">Seleccionar</option>
+                  <option *ngFor="let sancion of listSancion" value="{{sancion.id}}">{{sancion.titulo}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">REGISTRAR OBSERVACION Y FECHA</h5>
+              <hr>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Ingresar Observacion:</label><br>
+                <textarea class="form-control" rows="5" formControlName="observacion"></textarea>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">INGRESAR DOCUMENTO QUE AUTORIZA
+              </h5>
+              <hr>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group validate">
+                <h5>Adjuntar Documento <span class="text-danger">*</span></h5>
+                <div class="controls">
+                  <input type="file" name="file" id="filesMerito" class="form-control" required="" aria-invalid="false"
+                    #fileMerito (change)="capturarFileMerito($event)" accept="application/pdf">
+                  <div class="help-block">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelarcuatro()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="registrarMerito()" [disabled]="meritoForm.invalid">Agregar</button>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<!-- Editar Merito -->
+<div class="modal fade" id="modalEditarMerito" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Registrar Merito</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="meritoEditarForm">
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">GENERAR CODIGO DE DOCUMENTO</h5>
+              <hr>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Documento:</label><br>
+                <select class="form-control custom-select" formControlName="tipodocumento">
+                  <option value="">Seleccionar</option>
+                  <option value="1">Memorandum</option>
+                  <option value="2">Oficio</option>
+                  <option value="3">Resoluciones Administrativas</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Ingresar Codigo de documento:</label><br>
+                <input type="text" class="form-control" placeholder="Ingresar codigo" formControlName="cod_documento">
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">REGISTRAR INSTANCIA</h5>
+              <hr>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Instancia</label><br>
+                <select class="form-control custom-select" (change)="buscarSiglaMerito($event)" formControlName="tipoinstancia">
+                  <option value="">Seleccionar</option>
+                  <option value="1">Organo</option>
+                  <option value="2">Unidad Organica</option>
+                  <option value="3">Area</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Instancia:</label><br>
+                <select class="form-control custom-select" formControlName="id_instancia">
+                  <option value="">Seleccionar</option>
+                  <option *ngFor="let instancia of listInstancia" value="{{instancia.id}}">{{instancia.nombre}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">REGISTRAR SANCION Y ESTADO</h5>
+              <hr>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Estado:</label><br>
+                <select class="form-control custom-select" formControlName="id_estado">
+                  <option value="">Seleccionar</option>
+                  <option *ngFor="let estado of listEstado" value="{{estado.id}}">{{estado.descripcion}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Sancion:</label><br>
+                <select class="form-control custom-select" formControlName="id_sancion">
+                  <option value="">Seleccionar</option>
+                  <option *ngFor="let sancion of listSancion" value="{{sancion.id}}">{{sancion.titulo}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">REGISTRAR OBSERVACION Y FECHA</h5>
+              <hr>
+            </div>
+            <div class="col-lg-8">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Ingresar Observacion:</label><br>
+                <textarea class="form-control" rows="5" formControlName="observacion"></textarea>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Fecha:</label>
+                  <input class="form-control" type="date" id="example-date-input" formControlName="fecha">
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelarcuatro()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="EditarMerito()" [disabled]="meritoEditarForm.invalid">Editar</button>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<!-- Editar documento merito -->
+<div class="modal fade" id="editarDocumentoMerito" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Editar Documento Merito</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+            <div class="form-group validate">
+              <h5>Adjuntar Documento <span class="text-danger">*</span></h5>
+              <div class="controls">
+                <input type="file" name="file" id="filesInput" class="form-control" required="" aria-invalid="false"
+                  #fileDocumentoMerito (change)="capturarDocumentoMerito($event)" accept="application/pdf">
+                <div class="help-block">
+                </div>
+              </div>
+            </div>
+        </form>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelarcuatro()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="editarDocumentoMerito()">Editar</button>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>

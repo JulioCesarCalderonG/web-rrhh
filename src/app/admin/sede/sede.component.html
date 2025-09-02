@@ -1,0 +1,109 @@
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+
+<div class="row mb-5 d-flex justify-content-between">
+  <div class="col-lg-4">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalRegistrar" data-whatever="@mdo">
+      <i class="fa fa-plus-square"></i> Registrar</button>
+  </div>
+  <div class="col-lg-3">
+    <div class="form-group">
+      <select class="form-control custom-select" (change)="mostrarSedeTipo($event)">
+        <option value="1" selected>Habilitados</option>
+        <option value="0">Deshabilitados</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col" class="text-center">Id</th>
+      <th scope="col" class="text-center">Nombre</th>
+      <th scope="col" class="text-center">Estado</th>
+      <th class="text-center">Editar</th>
+      <th class="text-center">Eliminar</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- COMPLETAMOS LOS VALORES -->
+    <tr *ngFor="let sedes of listSedes!">
+      <td class="text-center">{{sedes.ids}}</td>
+      <td>{{sedes.nombre}}</td>
+      <td *ngIf="sedes.estado===1" class="text-center">Activo</td>
+      <td *ngIf="sedes.estado===0" class="text-center">Inactivo</td>
+      <td class="text-center">
+        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modificarSede" data-whatever="@mdo" (click)="obtenerSedeId(sedes.id)">
+          <i class="fa fa-edit"></i>
+        </button>
+      </td>
+      <td *ngIf="sedes.estado===0" class="text-center">
+        <button type="button" class="btn btn-secondary" (click)="eliminarSede(sedes.id, 1)">
+          <i class="fa fa-lock-open"></i>
+        </button>
+      </td>
+      <td *ngIf="sedes.estado===1" class="text-center">
+        <button type="button" class="btn btn-secondary" (click)="eliminarSede(sedes.id, 0)">
+          <i class="fa fa-lock"></i>
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<!-- ACA COLOCO LA PAGINACION -->
+      </div>
+    </div>
+
+<div class="modal fade" id="modalRegistrar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel" style="font-weight: bold;" >REGISTRAR SEDE</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="sedeForm">
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Nombre</label>
+            <input type="text" class="form-control" id="recipient-name" formControlName="nombre">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelar()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="registrarSede()" [disabled]="sedeForm.invalid">Registrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modificarSede" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel" style="font-weight: bold;" >EDITAR SEDE</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="sedeEditarForm">
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Nombre</label>
+            <input type="text" class="form-control" id="recipient-name" formControlName="nombre">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelar()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="editarSede()" [disabled]="sedeEditarForm.invalid">Editar</button>
+      </div>
+    </div>
+  </div>
+</div>

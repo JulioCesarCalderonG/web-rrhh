@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Caprasimo&display=swap');
+.consulta{
+  position: absolute;
+  width: 100%;
+  top: 0;
+  bottom: 0;
+}
+.container-imagen{
+  background-image: url('../../assets/images/background/csju.jpg');
+  width: 100%;
+  height: 100%;
+  background-size: 100% 100%;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.contenedor-datos{
+  margin: 0 auto;
+  background-color: rgba(255, 255, 255, 0.85);
+  border-radius: 10px;
+  width: 96%;
+  height: 90%;
+  position: absolute;
+  top: 5%;
+  bottom: 5%;
+  left: 2%;
+  right: 2%;
+}
+.contenedor-busqueda{
+  width: 50%;
+  margin-left: 25%;
+  margin-right: 25%;
+}
+.contenedor-tabla{
+  padding: 20px;
+  color: black!important;
+}
+.table{
+  color: black!important;
+}
+.titulo{
+  color: #000;
+  font-family: 'Caprasimo', cursive;
+  margin-top: 10px;
+  font-size: 30px;
+}
+.control-label{
+  font-weight: 900;
+  color: black;
+}
+.fa{
+  color: white;
+}
+.invi{
+  display: none;
+}

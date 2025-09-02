@@ -1,0 +1,45 @@
+<div class="card">
+  <div class="card-body">
+    <div class="row mb-5 d-flex justify-content-between">
+      <div class="col-lg-3">
+        <div class="form-group">
+          <select class="form-control custom-select" (change)="mostrarPersonalTipo($event)">
+            <option value="1" selected>Habilitados</option>
+            <option value="0">Deshabilitados</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-lg-4.5">
+        <app-buscar-personas (search)="buscar($event)"></app-buscar-personas>
+      </div>
+    </div>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col" class="text-center">Id</th>
+          <th scope="col" class="text-center">Nombre</th>
+          <th scope="col" class="text-center">Apellido</th>
+          <th scope="col" class="text-center">Escalafon</th>
+          <th scope="col" class="text-center">Fecha inicio</th>
+          <th class="text-center">Mostrar</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let personal of listPersonal!">
+          <th scope="row" class="text-center">{{personal.ids}}</th>
+          <td >{{personal.nombre}}</td>
+          <td >{{personal.apellido}}</td>
+          <td class="text-center">{{personal.escalafon}}</td>
+          <td class="text-center">{{personal.fecha_inicio}}</td>
+          <th class="text-center">
+            <button type="button" class="btn btn-danger"
+              (click)="redireccionarCrear(personal.id,personal.nombre, personal.apellido)">
+              <i class="fa fa-eye"></i>
+            </button>
+          </th>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

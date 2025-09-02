@@ -1,0 +1,382 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+
+        <div class="row">
+          <div class="col lg-12">
+            <h4 class="card-title" style="font-weight: 600;">Datos del personal: {{personal}}</h4>
+            <h6 class="card-subtitle">Por favor seleccione una opcion para ingresar sus datos</h6>
+          </div>
+
+          <div class="col lg-12 text-right">
+            <button type="button" class="btn btn-light" onclick="history.back();"><i
+                class="fa fa-arrow-left"></i></button>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-6 mb-4">
+            <button type="button" class="btn waves-effect waves-light btn-lg btn-block btn-success" data-toggle="modal"
+              data-target="#modalLicencias">
+              <i class="fa fa-truck"></i>
+              Registrar Record Licencia</button>
+          </div>
+          <div class="col-lg-6">
+            <button type="button" class="btn waves-effect waves-light btn-lg btn-block btn-secondary"
+              (click)="generarReporte()"><i class="fa fa-file-pdf"></i> Generar Reporte</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Generar report de record licencia-->
+  <div class="col-lg-12 invi" id="tableLicencia">
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col" class="text-center">Id</th>
+                <th scope="col" class="text-center">Documento que Autoriza</th>
+                <th scope="col" class="text-center">Tipo</th>
+                <th scope="col" class="text-center">Detalle</th>
+                <th scope="col" class="text-center">N° Días</th>
+                <th scope="col" class="text-center">Desde</th>
+                <th scope="col" class="text-center">Hasta</th>
+                <th scope="col" class="text-center">Ver Documento</th>
+                <th scope="col" class="text-center">Editar</th>
+                <th scope="col" class="text-center">Eliminar</th>
+                <th scope="col" class="text-center">Actualizar Documento</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let licencia of listLicencia" style="font-size: 15px;">
+                <td class="text-center">{{licencia.ids}}</td>
+                <td class="text-center">{{licencia.codigo_documento}}</td>
+                <td class="text-center">{{licencia.DetalleLicencium.TipoLicencium.nombre}} </td>
+                <td class="text-center">{{licencia.DetalleLicencium.nombre}} </td>
+                <td class="text-center">{{licencia.dias}}</td>
+                <td class="text-center">{{licencia.inicio}}</td>
+                <td class="text-center">{{licencia.fin}}</td>
+                <td class="text-center">
+                  <a href="{{url2}}/{{licencia.documento}}" class="btn btn-success" target="_blank">
+                    <i class="fa fa-eye"></i>
+                  </a>
+                </td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalEditarLicencia"
+                    data-whatever="@mdo" (click)="obtenerLicenciaId(licencia.id)">
+                    <i class="fa fa-pencil-alt"></i>
+                  </button>
+                </td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-danger" (click)="eliminarLicencia(licencia.id)">
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editarDocumentoLicencia"
+                    data-whatever="@mdo" (click)="obtenerIdDocumentoLicencia(licencia.id)">
+                    <i class="fa fa-file-pdf"></i>
+                  </button>
+                </td>
+                </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Agregar record de licencias -->
+<div class="modal fade" id="modalLicencias" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Registrar Record Licencia</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="licenciaForm">
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">GENERAR CODIGO DE DOCUMENTO</h5>
+              <hr>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Documento:</label><br>
+                <select class="form-control custom-select" (change)="mostrarProveido($event)"
+                  formControlName="tipodocumento">
+                  <option value="">Seleccionar</option>
+                  <option value="1">Proveido</option>
+                  <option value="2">Resoluciones Administrativas</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12 invi" id="selectLiUno">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar el area:</label><br>
+                <select class="form-control custom-select" formControlName="areauno">
+                  <option value="">Seleccionar</option>
+                  <option value="1">PRESIDENCIA</option>
+                  <option value="2">RECURSOS HUMANOS</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12 invi" id="selectLiDos">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar el area:</label><br>
+                <select class="form-control custom-select" formControlName="areados">
+                  <option value="">Seleccionar</option>
+                  <option value="1">PRESIDENCIA</option>
+                  <option value="2">GERENCIA DE ADMINISTRACION DISTRITAL</option>
+                  <option value="3">COORDINACION DE RECURSOS HUMANOS</option>
+                  <option value="4">OFICINA DE ADMINISTRACION</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Numero:</label>
+                <input type="number" class="form-control" id="recipient-name" formControlName="numero">
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Año:</label>
+                <input type="number" class="form-control" id="recipient-name" formControlName="ano">
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">GENERAR TIPO DE LICENCIA</h5>
+              <hr>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Licencia:</label><br>
+                <select class="form-control custom-select" (change)="mostrarDetalleLicencia($event)">
+                  <option value="">Seleccionar</option>
+                  <option *ngFor="let tipo of listTipoLicencia" value="{{tipo.id}}">{{tipo.nombre}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Detalle de Licencia:</label><br>
+                <select class="form-control custom-select" formControlName="detallelicencia">
+                  <option value="">Seleccionar</option>
+                  <option *ngFor="let detalle of listDetalleLicencia" value="{{detalle.id}}">{{detalle.nombre}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">INGRESAR PERIODO DE LICENCIA
+              </h5>
+              <hr>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Desde:</label>
+                  <input class="form-control" type="date" id="example-date-input" formControlName="inicio">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Hasta:</label>
+                  <input class="form-control" type="date" id="example-date-input" formControlName="fin">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">INGRESAR DOCUMENTO DE LICENCIA
+              </h5>
+              <hr>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group validate">
+                <h5>Adjuntar Documento <span class="text-danger">*</span></h5>
+                <div class="controls">
+                  <input type="file" name="file" id="filesInput" class="form-control" required="" aria-invalid="false"
+                    #fileLicencia (change)="capturarFileLicencia($event)" accept="application/pdf">
+                  <div class="help-block">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelardos()">Cancelar</button>
+          <button type="button" class="btn btn-primary" (click)="registrarLicencia()"
+            [disabled]="licenciaForm.invalid">Registrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Editar record licencias -->
+<div class="modal fade" id="modalEditarLicencia" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Editar Record Licencia</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="licenciaEditarForm">
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">GENERAR CODIGO DE DOCUMENTO</h5>
+              <hr>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Documento:</label><br>
+                <select class="form-control custom-select" (change)="mostrarProveidoDos($event)"
+                  formControlName="tipodocumento">
+                  <option value="">Seleccionar</option>
+                  <option value="1">Proveido</option>
+                  <option value="2">Resoluciones Administrativas</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12 invi" id="selectLiUnoProv">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar el area:</label><br>
+                <select class="form-control custom-select" formControlName="areauno">
+                  <option value="">Seleccionar</option>
+                  <option value="1">PRESIDENCIA</option>
+                  <option value="2">RECURSOS HUMANOS</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12 invi" id="selectLiDosProv">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar el area:</label><br>
+                <select class="form-control custom-select" formControlName="areados">
+                  <option value="">Seleccionar</option>
+                  <option value="1">PRESIDENCIA</option>
+                  <option value="2">GERENCIA DE ADMINISTRACION DISTRITAL</option>
+                  <option value="3">COORDINACION DE RECURSOS HUMANOS</option>
+                  <option value="4">OFICINA DE ADMINISTRACION</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Numero:</label>
+                <input type="number" class="form-control" id="recipient-name" formControlName="numero">
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Año:</label>
+                <input type="number" class="form-control" id="recipient-name" formControlName="ano">
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">GENERAR TIPO DE LICENCIA</h5>
+              <hr>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Licencia:</label><br>
+                <select class="form-control custom-select" (change)="mostrarDetalleLicencia($event)"
+                  formControlName="tipo_licencia">
+                  <option value="">Seleccionar</option>
+                  <option *ngFor="let tipo of listTipoLicencia" value="{{tipo.id}}">{{tipo.nombre}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Detalle de Licencia:</label><br>
+                <select class="form-control custom-select" formControlName="detallelicencia">
+                  <option value="">Seleccionar</option>
+                  <option *ngFor="let detalle of listDetalleLicencia" value="{{detalle.id}}">{{detalle.nombre}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">INGRESAR PERIODO DE LICENCIA
+              </h5>
+              <hr>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Desde:</label>
+                  <input class="form-control" type="date" id="example-date-input" formControlName="inicio">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Hasta:</label>
+                  <input class="form-control" type="date" id="example-date-input" formControlName="fin">
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelardos()">Cancelar</button>
+          <button type="button" class="btn btn-primary" (click)="editarLicencia()"
+            [disabled]="licenciaEditarForm.invalid">Editar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Editar documento licencias -->
+<div class="modal fade" id="editarDocumentoLicencia" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Editar Documento Licencia</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group validate">
+            <h5>Adjuntar Documento <span class="text-danger">*</span></h5>
+            <div class="controls">
+              <input type="file" name="file" id="filesInput" class="form-control" required="" aria-invalid="false"
+                #fileDocumentoLicencia (change)="capturarDocumentoLicencia($event)" accept="application/pdf">
+              <div class="help-block">
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelardos()">Cancelar</button>
+          <button type="button" class="btn btn-primary" (click)="editarDocumentoLicencia()">Editar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

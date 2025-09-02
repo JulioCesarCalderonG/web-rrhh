@@ -1,0 +1,111 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="row mb-5 d-flex justify-content-between">
+          <div class="col-lg-4">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalTipodocumento"
+              data-whatever="@mdo">
+              <i class="fa fa-plus-square"></i> Registrar</button>
+          </div>
+          <div class="col-lg-3">
+            <div class="form-group">
+              <select class="form-control custom-select" (change)="mostrarTipodocTipo($event)">
+                <option value="1" selected>Habilitados</option>
+                <option value="0">Deshabilitados</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col" class="text-center">Id</th>
+              <th scope="col" class="text-center">Descripcion</th>
+              <th scope="col" class="text-center">Estado</th>
+              <th class="text-center">Editar</th>
+              <th class="text-center">Eliminar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let tipodocumento of listTipodocumento">
+              <th scope="row" class="text-center">{{tipodocumento.ids}}</th>
+              <td>{{tipodocumento.descripcion}}</td>
+              <td *ngIf="tipodocumento.estado===1" class="text-center">Activo</td>
+              <td *ngIf="tipodocumento.estado===0" class="text-center">Inactivo</td>
+              <td class="text-center">
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modificarTipodocumento"
+                  data-whatever="@mdo" (click)="obtenerTipodocumentoId(tipodocumento.id)">
+                  <i class="fa fa-edit"></i>
+                </button>
+              </td>
+              <td *ngIf="tipodocumento.estado===0" class="text-center">
+                <button type="button" class="btn btn-secondary" (click)="eliminarTipodocumento(tipodocumento.id, 1)">
+                  <i class="fa fa-lock-open"></i>
+                </button>
+              </td>
+              <td *ngIf="tipodocumento.estado===1" class="text-center">
+                <button type="button" class="btn btn-secondary" (click)="eliminarTipodocumento(tipodocumento.id, 0)">
+                  <i class="fa fa-lock"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modalTipodocumento" tabindex="-1" aria-labelledby="exampleModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel" style="font-weight: bold;">REGISTRAR TIPO DE DOCUMENTO</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form [formGroup]="tipodocumentoform">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Descripcion:</label>
+                <input type="text" class="form-control" id="recipient-name" formControlName="descripcion">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelar()">Cancelar</button>
+            <button type="button" class="btn btn-primary" (click)="registrarTipodocumento()"
+              [disabled]="tipodocumentoform.invalid">Registrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modificarTipodocumento" tabindex="-1" aria-labelledby="exampleModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel" style="font-weight: bold;">EDITAR TIPO DE DOCUMENTO</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form [formGroup]="tipodocumentoEditarform">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Descripcion:</label>
+                <input type="text" class="form-control" id="recipient-name" formControlName="descripcion">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelar()">Cancelar</button>
+            <button type="button" class="btn btn-primary" (click)="editarTipodocumento()"
+              [disabled]="tipodocumentoEditarform.invalid">Editar</button>
+          </div>
+        </div>
+      </div>
+    </div>

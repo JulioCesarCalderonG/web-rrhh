@@ -1,0 +1,81 @@
+<!-- ============================================================== -->
+<!-- Left Sidebar - style you can find in sidebar.scss  -->
+<!-- ============================================================== -->
+<aside class="left-sidebar">
+  <!-- Sidebar scroll-->
+  <div class="scroll-sidebar">
+    <!-- Sidebar navigation-->
+    <nav class="sidebar-nav">
+      <ul id="sidebarnav">
+        <li class="user-profile">
+          <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><img
+              src="./assets/images/users/usuario.png" alt="user" /><span class="hide-menu">{{personal}}
+            </span></a>
+          <ul aria-expanded="false" class="collapse">
+            <li><a href="javascript:void()" (click)="logout()">Cerrar sesión</a></li>
+            <li><a href="javascript:void()" data-toggle="modal" data-target="#resetPassword">Cambiar contraseña</a></li>
+          </ul>
+        </li>
+        <li class="nav-devider"></li>
+        <li class="nav-small-cap" style="color: white;">AREA PERSONAL CSJU</li>
+        <!-- <li>
+          <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i
+              class="mdi mdi-gauge"></i><span class="hide-menu">Organo Jurisdiccional</span></a>
+          <ul aria-expanded="false" class="collapse">
+            <li><a [routerLink]="['/admin/dependencia']" routerLinkActive="router-link-active" >Mostrar Unidad Organica</a></li>
+          </ul>
+        </li> -->
+        <li>
+          <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i
+              class="mdi mdi-plus-circle"></i><span class="hide-menu">Mostrar Solicitudes</span></a>
+          <ul aria-expanded="false" class="collapse">
+            <li><a [routerLink]="['/jefe']" routerLinkActive="router-link-active">Solicitudes</a></li>
+          </ul>
+        </li>
+
+
+        <!-- <li>
+          <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i
+              class="mdi mdi-account-circle"></i><span class="hide-menu">Administradores</span></a>
+          <ul aria-expanded="false" class="collapse">
+            <li><a [routerLink]="['/admin/administrador']" routerLinkActive="router-link-active" >Mostrar Administradores</a></li>
+          </ul>
+        </li>-->
+
+      </ul>
+    </nav>
+    <!-- End Sidebar navigation -->
+  </div>
+  <!-- End Sidebar scroll-->
+</aside>
+<!-- ============================================================== -->
+<!-- End Left Sidebar - style you can find in sidebar.scss  -->
+<!-- ============================================================== -->
+<div class="modal fade" id="resetPassword" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Cambiar Contraseña</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="resetForm">
+          <div class="form-group">
+            <label class="control-label">Contraseña anterior</label>
+            <input type="password" id="firstName" class="form-control" formControlName="passworduno">
+          </div>
+          <div class="form-group">
+            <label class="control-label">Contraseña actual</label>
+            <input type="password" id="firstName" class="form-control" formControlName="passworddos">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelar()">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="resetPassword()" [disabled]="resetForm.invalid">Cambiar Contraseña</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,183 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="row mb-5 d-flex justify-content-between">
+          <div class="col-lg-4">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAgregarRegimen"
+              data-whatever="@mdo">
+              <i class="fa fa-plus-square"></i> Agregar</button>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-group">
+              <select class="form-control custom-select" (change)="mostrarRegimenLaboralTipo($event)">
+                <option value="1" selected>Habilitados</option>
+                <option value="0">Deshabilitados</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <app-buscar-personas (search)="buscador($event)"></app-buscar-personas>
+          </div>
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col" class="text-center">Id</th>
+              <th scope="col" class="text-center">Regimen</th>
+              <th scope="col" class="text-center">Condicion</th>
+              <th scope="col" class="text-center">Clase</th>
+              <th scope="col" class="text-center">Nombre</th>
+              <th scope="col" class="text-center">Apellido</th>
+              <th scope="col" class="text-center">Fecha inicio</th>
+              <th scope="col" class="text-center">Fecha fin</th>
+              <th class="text-center">Editar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let rlaboral of listRegimenLaboral" class="text-center">
+              <th scope="row" class="text-center">{{rlaboral.ids}}</th>
+              <td >{{rlaboral.regimen}}</td>
+              <td >{{rlaboral.condicion}}</td>
+              <td class="text-center">{{rlaboral.tipo_personal}}</td>
+              <td class="text-center">{{rlaboral.nombre}}</td>
+              <td class="text-center">{{rlaboral.apellido}}</td>
+              <td class="text-center">{{rlaboral.inicio}}</td>
+              <td class="text-center">{{rlaboral.fin==='2030-12-30'?'Actualidad':rlaboral.fin}}</td>
+              <th class="text-center" >
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modificarRegimenLaboral"
+                  data-whatever="@mdo" (click)="obtenerDatosId(rlaboral.id)">
+                  <i class="fa fa-edit"></i>
+                </button>
+              </th>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Agregar Regimen Laboral -->
+<div class="modal fade" id="modalAgregarRegimen" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel" style="font-weight: bold;">REGISTRAR REGIMEN LABORAL POR PERSONAL</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="regimenLaborarForm">
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Seleccionar Personal:</label>
+            <select class="form-control custom-select" formControlName="id_personal">
+              <option value="" selected>Seleccionar</option>
+              <option *ngFor="let personal of listPersonal" value="{{personal.id}}">{{personal.nombre}} {{personal.apellido}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Seleccionar regimen:</label>
+            <select class="form-control custom-select" (change)="mostrarCondicion($event)" formControlName="id_regimen">
+              <option value="0" selected>Seleccionar</option>
+              <option *ngFor="let regimen of listRegimen" value="{{regimen.id}}">{{regimen.nombre}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Seleccionar condicion:</label>
+            <select class="form-control custom-select" formControlName="id_condicion">
+              <option value="" selected>Seleccionar</option>
+              <option *ngFor="let condicion of listCondicion" value="{{condicion.id}}">{{condicion.nombre}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Seleccionar clase:</label>
+            <select class="form-control custom-select" formControlName="id_tipo_personal">
+              <option value="" selected>Seleccionar</option>
+              <option *ngFor="let tipopersonal of listTipoPersonal" value="{{tipopersonal.id}}">{{tipopersonal.titulo}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label">Fecha inicio:</label>
+              <input class="form-control" type="date" id="example-date-input" formControlName="inicio">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label">Fecha fin:</label>
+              <input class="form-control" type="date" id="example-date-input" formControlName="fin">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelar()">Cancelar</button>
+        <button type="button" class="btn btn-primary" [disabled]="regimenLaborarForm.invalid" (click)="agregarRegimenLaboral()">Registrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Editar Regimen Laboral -->
+<div class="modal fade" id="modificarRegimenLaboral" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel" style="font-weight: bold;">EDITAR REGIMEN LABORAL POR PERSONAL</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="regimenLaborarEditarForm">
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Seleccionar Personal:</label>
+            <select class="form-control custom-select" formControlName="id_personal">
+              <option value="" selected>Seleccionar</option>
+              <option *ngFor="let personal of listPersonal" value="{{personal.id}}">{{personal.nombre}} {{personal.apellido}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Seleccionar regimen:</label>
+            <select class="form-control custom-select" (change)="mostrarCondicion($event)" formControlName="id_regimen">
+              <option value="0" selected>Seleccionar</option>
+              <option *ngFor="let regimen of listRegimen" value="{{regimen.id}}">{{regimen.nombre}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Seleccionar condicion:</label>
+            <select class="form-control custom-select" formControlName="id_condicion">
+              <option value="" selected>Seleccionar</option>
+              <option *ngFor="let condicion of listCondicion" value="{{condicion.id}}">{{condicion.nombre}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Seleccionar clase:</label>
+            <select class="form-control custom-select" formControlName="id_tipo_personal">
+              <option value="" selected>Seleccionar</option>
+              <option *ngFor="let tipopersonal of listTipoPersonal" value="{{tipopersonal.id}}">{{tipopersonal.titulo}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label">Fecha inicio:</label>
+              <input class="form-control" type="date" id="example-date-input" formControlName="inicio">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label">Fecha fin:</label>
+              <input class="form-control" type="date" id="example-date-input" formControlName="fin">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelar()">Cancelar</button>
+        <button type="button" class="btn btn-primary" [disabled]="regimenLaborarEditarForm.invalid" (click)="editarRegimenLaboral()">Editar</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,372 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+
+        <div class="row">
+          <div class="col lg-12">
+            <h5 class="card-title" style="font-weight: 600;">Datos del personal: {{personal}}</h5>
+            <h6 class="card-subtitle">Por favor seleccione una opcion para ingresar sus datos</h6>
+          </div>
+
+          <div class="col lg-12 text-right">
+            <button type="button" class="btn btn-light" onclick="history.back();"><i
+                class="fa fa-arrow-left"></i></button>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-6 mb-4">
+            <button type="button" class="btn waves-effect waves-light btn-lg btn-block btn-warning" data-toggle="modal"
+              data-target="#modalMerito"><i class="fa fa-street-view"></i> Registrar Record Demerito</button>
+          </div>
+          <div class="col-lg-6">
+            <button type="button" class="btn waves-effect waves-light btn-lg btn-block btn-secondary"
+              (click)="generarReporte()"><i class="fa fa-file-pdf"></i> Generar Reporte</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Generar reporte de record demerito -->
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="text-center">Id</th>
+                <th class="text-center">Documento que Autoriza</th>
+                <th class="text-center">Instancia</th>
+                <th class="text-center">Sanción</th>
+                <th class="text-center">Fecha</th>
+                <th class="text-center">Estado</th>
+                <th class="text-center">Observaciones</th>
+                <th class="text-center">Ver Documento</th>
+                <th class="text-center">Editar</th>
+                <th class="text-center">Eliminar</th>
+                <th class="text-center">Actualizar Documento</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let merito of listMerito" style="font-size: 15px;">
+                <td class="text-center">{{merito.ids}}</td>
+                <td class="text-center">{{merito.codigo_documento}}</td>
+                <td class="text-center">{{merito.instancia}} </td>
+                <td class="text-center">{{merito.sancion}} </td>
+                <td class="text-center">{{merito.fecha}}</td>
+                <td class="text-center">{{merito.estado}}</td>
+                <td class="text-center">{{merito.observacion}}</td>
+                <td class="text-center">
+                  <a href="{{url5}}/{{merito.documento}}" class="btn btn-success" target="_blank">
+                    <i class="fas fa-eye"></i>
+                  </a>
+                </td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalEditarMerito"
+                    data-whatever="@mdo" (click)="obtenerMeritoId(merito.id)">
+                    <i class="fa fa-pencil-alt"></i>
+                  </button>
+                </td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-danger" (click)="eliminarMerito(merito.id)">
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editarDocumentoMerito"
+                    data-whatever="@mdo" (click)="obtenerIdDocumentoMerito(merito.id)">
+                    <i class="fa fa-file-pdf"></i>
+                  </button>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Agregar demerito -->
+<div class="modal fade" id="modalMerito" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Registrar Record Demerito</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="meritoForm">
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">GENERAR CODIGO DE DOCUMENTO</h5>
+              <hr>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Documento:</label><br>
+                <select class="form-control custom-select" formControlName="tipodocumento">
+                  <option value="">Seleccionar</option>
+                  <option value="1">Memorandum</option>
+                  <option value="2">Oficio</option>
+                  <option value="3">Resoluciones Administrativas</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-8">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Ingresar Codigo de documento:</label><br>
+                <input type="text" class="form-control" placeholder="Ingresar codigo" formControlName="cod_documento">
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Fecha:</label>
+                  <input class="form-control" type="date" id="example-date-input" formControlName="fecha">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">REGISTRAR INSTANCIA</h5>
+              <hr>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Instancia</label><br>
+                <select class="form-control custom-select" (change)="buscarSiglaMerito($event)"
+                  formControlName="tipoinstancia">
+                  <option value="">Seleccionar</option>
+                  <option value="1">Organo</option>
+                  <option value="2">Unidad Organica</option>
+                  <option value="3">Area</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Instancia:</label><br>
+                <select class="form-control custom-select" formControlName="id_instancia">
+                  <option value="">Seleccionar</option>
+                  <option *ngFor="let instancia of listInstancia" value="{{instancia.id}}">{{instancia.nombre}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">REGISTRAR SANCION Y ESTADO</h5>
+              <hr>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Estado:</label><br>
+                <select class="form-control custom-select" formControlName="id_estado">
+                  <option value="">Seleccionar</option>
+                  <option *ngFor="let estado of listEstado" value="{{estado.id}}">{{estado.descripcion}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Sancion:</label><br>
+                <select class="form-control custom-select" formControlName="id_sancion">
+                  <option value="">Seleccionar</option>
+                  <option *ngFor="let sancion of listSancion" value="{{sancion.id}}">{{sancion.titulo}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">REGISTRAR OBSERVACION Y FECHA
+              </h5>
+              <hr>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Ingresar Observacion:</label><br>
+                <textarea class="form-control" rows="5" formControlName="observacion"></textarea>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">INGRESAR DOCUMENTO QUE AUTORIZA
+              </h5>
+              <hr>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group validate">
+                <h5>Adjuntar Documento <span class="text-danger">*</span></h5>
+                <div class="controls">
+                  <input type="file" name="file" id="filesMerito" class="form-control" required="" aria-invalid="false"
+                    #fileMerito (change)="capturarFileMerito($event)" accept="application/pdf">
+                  <div class="help-block">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal"
+            (click)="cancelarcuatro()">Cancelar</button>
+          <button type="button" class="btn btn-primary" (click)="registrarMerito()"
+            [disabled]="meritoForm.invalid">Agregar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Editar demerito -->
+<div class="modal fade" id="modalEditarMerito" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Editar Record Demerito</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="meritoEditarForm">
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">GENERAR CODIGO DE DOCUMENTO</h5>
+              <hr>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Documento:</label><br>
+                <select class="form-control custom-select" formControlName="tipodocumento">
+                  <option value="">Seleccionar</option>
+                  <option value="1">Memorandum</option>
+                  <option value="2">Oficio</option>
+                  <option value="3">Resoluciones Administrativas</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Ingresar Codigo de documento:</label><br>
+                <input type="text" class="form-control" placeholder="Ingresar codigo" formControlName="cod_documento">
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">REGISTRAR INSTANCIA</h5>
+              <hr>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Instancia</label><br>
+                <select class="form-control custom-select" (change)="buscarSiglaMerito($event)"
+                  formControlName="tipoinstancia">
+                  <option value="">Seleccionar</option>
+                  <option value="1">Organo</option>
+                  <option value="2">Unidad Organica</option>
+                  <option value="3">Area</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Instancia:</label><br>
+                <select class="form-control custom-select" formControlName="id_instancia">
+                  <option value="">Seleccionar</option>
+                  <option *ngFor="let instancia of listInstancia" value="{{instancia.id}}">{{instancia.nombre}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">REGISTRAR SANCION Y ESTADO</h5>
+              <hr>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Estado:</label><br>
+                <select class="form-control custom-select" formControlName="id_estado">
+                  <option value="">Seleccionar</option>
+                  <option *ngFor="let estado of listEstado" value="{{estado.id}}">{{estado.descripcion}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Sancion:</label><br>
+                <select class="form-control custom-select" formControlName="id_sancion">
+                  <option value="">Seleccionar</option>
+                  <option *ngFor="let sancion of listSancion" value="{{sancion.id}}">{{sancion.titulo}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">REGISTRAR OBSERVACION Y FECHA
+              </h5>
+              <hr>
+            </div>
+            <div class="col-lg-8">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Ingresar Observacion:</label><br>
+                <textarea class="form-control" rows="5" formControlName="observacion"></textarea>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Fecha:</label>
+                  <input class="form-control" type="date" id="example-date-input" formControlName="fecha">
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal"
+            (click)="cancelarcuatro()">Cancelar</button>
+          <button type="button" class="btn btn-primary" (click)="EditarMerito()"
+            [disabled]="meritoEditarForm.invalid">Editar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Editar documento merito -->
+<div class="modal fade" id="editarDocumentoMerito" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Editar Documento Demerito</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group validate">
+            <h5>Adjuntar Documento <span class="text-danger">*</span></h5>
+            <div class="controls">
+              <input type="file" name="file" id="filesInput" class="form-control" required="" aria-invalid="false"
+                #fileDocumentoMerito (change)="capturarDocumentoMerito($event)" accept="application/pdf">
+              <div class="help-block">
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal"
+            (click)="cancelarcuatro()">Cancelar</button>
+          <button type="button" class="btn btn-primary" (click)="editarDocumentoMerito()">Editar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

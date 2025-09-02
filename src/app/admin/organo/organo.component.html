@@ -1,0 +1,138 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="row mb-5 d-flex justify-content-between">
+          <div class="col-lg-4">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarOrgano"
+              data-whatever="@mdo">
+              <i class="fa fa-plus-square"></i> Registrar</button>
+          </div>
+          <div class="col-lg-3">
+            <div class="form-group">
+              <select class="form-control custom-select" (change)="mostrarOrganoTipo($event)">
+                <option value="1" selected>Habilitados</option>
+                <option value="0">Deshabilitados</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col" class="text-center">Id</th>
+              <th scope="col" class="text-center">Nombre</th>
+              <th scope="col" class="text-center">Sigla</th>
+              <th scope="col" class="text-center">Nombre de Sede</th>
+              <th scope="col" class="text-center">Estado</th>
+              <th class="text-center">Editar</th>
+              <th class="text-center">Eliminar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let organo of listOrgano!">
+              <th scope="row" class="text-center">{{organo.ids}}</th>
+              <td>{{organo.nombre}}</td>
+              <td class="text-center">{{organo.sigla}}</td>
+              <td class="text-center">{{organo.Sede.nombre}}</td>
+              <td *ngIf="organo.estado===1" class="text-center">Activo</td>
+              <td *ngIf="organo.estado===0" class="text-center">Inactivo</td>
+              <td class="text-center">
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modificarOrgano"
+                  data-whatever="@mdo" (click)="obtenerOrganoId(organo.id)">
+                  <i class="fa fa-edit"></i>
+                </button>
+              </td>
+              <td *ngIf="organo.estado===0" class="text-center">
+                <button type="button" class="btn btn-secondary" (click)="eliminarOrgano(organo.id, 1)">
+                  <i class="fa fa-lock-open"></i>
+                </button>
+              </td>
+              <td *ngIf="organo.estado===1" class="text-center">
+                <button type="button" class="btn btn-secondary" (click)="eliminarOrgano(organo.id, 0)">
+                  <i class="fa fa-lock"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="modal fade" id="agregarOrgano" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel" style="font-weight: bold;">REGISTRAR ORGANO JURISDICCIONAL
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form [formGroup]="organoForm">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Nombre:</label>
+                <input type="text" class="form-control" formControlName="nombre">
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Sigla:</label>
+                <input type="text" class="form-control" formControlName="sigla">
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Sede:</label><br>
+                <select class="form-control custom-select" formControlName="sede">
+                  <option selected value="">Seleccionar</option>
+                  <option *ngFor="let sede of listSedes" value="{{sede.id}}">{{sede.nombre}}</option>
+                </select>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelar()">Cancelar</button>
+            <button type="button" class="btn btn-primary" (click)="registrarOrgano()"
+              [disabled]="organoForm.invalid">Registrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="modal fade" id="modificarOrgano" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Editar Registro</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form [formGroup]="organoEditarForm">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Nombre:</label>
+                <input type="text" class="form-control" formControlName="nombre">
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Sigla:</label>
+                <input type="text" class="form-control" formControlName="sigla">
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Sede:</label><br>
+                <select class="form-control custom-select" formControlName="sede">
+                  <option selected value="">Seleccionar</option>
+                  <option *ngFor="let sede of listSedes" value="{{sede.id}}">{{sede.nombre}}</option>
+                </select>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelar()">Cancelar</button>
+            <button type="button" class="btn btn-primary" (click)="editarOrgano()"
+              [disabled]="organoEditarForm.invalid">Editar</button>
+          </div>
+        </div>
+      </div>
+    </div>

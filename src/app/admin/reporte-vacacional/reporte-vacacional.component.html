@@ -1,0 +1,413 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+
+        <div class="row">
+          <div class="col lg-12">
+            <h5 class="card-title" style="font-weight: 600;">Datos del personal: {{personal}}</h5>
+            <h6 class="card-subtitle">Por favor seleccione una opcion para ingresar sus datos</h6>
+          </div>
+          <div class="col lg-12 text-right">
+            <button type="button" class="btn btn-light" onclick="history.back();"><i
+                class="fa fa-arrow-left"></i></button>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-6 mb-4 mt-2">
+            <div class="row">
+              <div class="col-lg-12">
+                <button type="button" class="btn waves-effect waves-light btn-lg btn-block btn-info mb-2"
+                  data-toggle="modal" data-target="#modalVacacional"><i class="fa fa-umbrella"></i> Registrar Record
+                  Vacacional</button>
+              </div>
+              <div class="col-lg-12">
+                <button type="button" class="btn waves-effect waves-light btn-lg btn-block btn-secondary"
+                  (click)="generarReporte()"><i class="fa fa-file-pdf"></i> Generar Reporte</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 mb-4">
+            <form [formGroup]="regimenForm">
+              <label for="exampleFormControlSelect2">Seleccionar Regimen Laboral</label>
+              <select multiple class="form-control" id="exampleFormControlSelect2" formControlName="regimen">
+                <option *ngFor="let regimen of listRegimenLaboral" value="{{regimen.id}}" class="mb-1 text-center"
+                  style="border-radius: 10px; color: black"
+                  [ngStyle]="{'background-color': regimen.estado===1?'rgb(124, 220, 115)':'rgb(255, 116, 116)'}">
+                  {{regimen.Condicion.Regimen.nombre}} -
+                  {{regimen.Condicion.nombre}} -
+                  {{regimen.inicio}} hasta
+                  {{regimen.fin==='2030-12-30'?'Actualidad':regimen.fin}}
+                </option>
+              </select>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Generar report de record vacacional-->
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="text-center">Id</th>
+                <th class="text-center">Documento que Autoriza</th>
+                <th class="text-center">Periodo</th>
+                <th class="text-center">Inicio</th>
+                <th class="text-center">Termino</th>
+                <th class="text-center">Ejercicio Efectivo</th>
+                <th class="text-center">Ver Documento</th>
+                <th class="text-center">Editar</th>
+                <th class="text-center">Eliminar</th>
+                <th class="text-center">Actualizar Documento</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let vacacional of listVacacional" style="font-size: 15px;">
+                <td class="text-center">{{vacacional.ids}}</td>
+                <td class="text-center">{{vacacional.codigo_documento}}</td>
+                <td class="text-center">{{vacacional.periodo}} </td>
+                <td class="text-center">{{vacacional.inicio}} </td>
+                <td class="text-center">{{vacacional.termino}}</td>
+                <td class="text-center">{{vacacional.dias}}</td>
+                <td class="text-center">
+                  <a href="{{url4}}/{{vacacional.documento}}" class="btn btn-success" target="_blank">
+                    <i class="fas fa-eye"></i>
+                  </a>
+                </td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalEditarVacacional"
+                    data-whatever="@mdo" (click)="obtenerVacacionalId(vacacional.id)">
+                    <i class="fa fa-pencil-alt"></i>
+                  </button>
+                </td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-danger" (click)="eliminarVacacional(vacacional.id)">
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-warning" data-toggle="modal"
+                    data-target="#editarDocumentoVacacional" data-whatever="@mdo"
+                    (click)="obtenerIdDocumentoVacacional(vacacional.id)">
+                    <i class="fa fa-file-pdf"></i>
+                  </button>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Agregar record vacacional -->
+  <div class="modal fade" id="modalVacacional" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Registrar Record Vacacional</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="vacacionalForm">
+            <div class="row">
+              <div class="col-lg-12">
+                <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">REGISTRAR REGIMEN LABORAL</h5>
+                <hr>
+              </div>
+              <div class="col-lg-12">
+                <div class="form-group">
+                  <label for="exampleFormControlSelect2">Seleccionar Regimen Laboral</label>
+                  <select class="form-control" id="exampleFormControlSelect2" formControlName="regimen">
+                    <option value="">Selecciona</option>
+                    <option *ngFor="let regimen of listRegimenLaboral" value="{{regimen.id}}" class="mb-1"
+                      style="color: black"
+                      [ngStyle]="{'background-color': regimen.estado===1?'rgb(124, 220, 115)':'rgb(255, 116, 116)'}">
+                      {{regimen.Condicion.Regimen.nombre}} -
+                      {{regimen.Condicion.nombre}} -
+                      {{regimen.estado===1?'Activo':'Inactivo'}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-12">
+                <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">GENERAR CODIGO DE DOCUMENTO
+                </h5>
+                <hr>
+              </div>
+              <div class="col-lg-12">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Documento:</label><br>
+                  <select class="form-control custom-select" (change)="mostrarTipoDocVacional($event)"
+                    formControlName="tipodocumento">
+                    <option value="">Seleccionar</option>
+                    <option value="1">Resolucion Administrativa</option>
+                    <option value="2">Memorando</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-12 invi" id="selectAreaUno">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Seleccionar el area:</label><br>
+                  <select class="form-control custom-select" formControlName="areauno">
+                    <option value="">Seleccionar</option>
+                    <option value="1">Presidencia</option>
+                    <option value="2">Gerencia de Administracion Distrital</option>
+                    <option value="3">Unidad de Administrativa y Finanzas</option>
+                    <option value="4">Oficina de Administracion</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-12 invi" id="selectAreaDos">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Seleccionar el area:</label><br>
+                  <select class="form-control custom-select" formControlName="areados">
+                    <option value="">Seleccionar</option>
+                    <option value="1">Gerencia de Administracion Distrital</option>
+                    <option value="2">Unidad de Administrativa y Finanzas</option>
+                    <option value="3">Oficina de Administracion</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Numero:</label>
+                  <input type="number" class="form-control" id="recipient-name" formControlName="numero">
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Año:</label>
+                  <input type="number" class="form-control" id="recipient-name" formControlName="ano">
+                </div>
+              </div>
+              <div class="col-lg-12">
+                <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">INGRESAR PERIODO VACACIONAL
+                </h5>
+                <hr>
+              </div>
+              <div class="col-lg-5">
+                <div class="form-group">
+                  <div class="form-group">
+                    <label for="recipient-name" class="col-form-label">Desde:</label>
+                    <input class="form-control" type="date" id="example-date-input" formControlName="inicio">
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-5">
+                <div class="form-group">
+                  <div class="form-group">
+                    <label for="recipient-name" class="col-form-label">Hasta:</label>
+                    <input class="form-control" type="date" id="example-date-input" formControlName="fin">
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-2">
+                <div class="form-group">
+                  <div class="form-group">
+                    <label for="recipient-name" class="col-form-label">Periodo:</label>
+                    <input type="number" class="form-control" id="recipient-name" formControlName="periodo">
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-12">
+                <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">INGRESAR DOCUMENTO DE VACACIONES
+                </h5>
+                <hr>
+              </div>
+              <div class="col-lg-12">
+                <div class="form-group validate">
+                  <h5>Adjuntar Documento <span class="text-danger">*</span></h5>
+                  <div class="controls">
+                    <input type="file" name="file" id="filesInput" class="form-control" required="" aria-invalid="false"
+                      #fileVacacional (change)="capturarFileVacacional($event)" accept="application/pdf">
+                    <div class="help-block">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal"
+              (click)="cancelartres()">Cancelar</button>
+            <button type="button" class="btn btn-primary" (click)="registrarVacacional()"
+              [disabled]="vacacionalForm.invalid">Registrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Editar record vacacional -->
+  <div class="modal fade" id="modalEditarVacacional" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Editar Record Vacacional</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="vacacionalEditarForm">
+            <div class="row">
+              <div class="col-lg-12">
+                <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">REGISTRAR REGIMEN LABORAL</h5>
+                <hr>
+              </div>
+              <div class="col-lg-12">
+                <div class="form-group">
+                  <label for="exampleFormControlSelect2">Seleccionar Regimen Laboral</label>
+                  <select class="form-control" id="exampleFormControlSelect2" formControlName="regimen">
+                    <option value="">Selecciona</option>
+                    <option *ngFor="let regimen of listRegimenLaboral" value="{{regimen.id}}" class="mb-1"
+                      style="color: black"
+                      [ngStyle]="{'background-color': regimen.estado===1?'rgb(124, 220, 115)':'rgb(255, 116, 116)'}">
+                      {{regimen.Condicion.Regimen.nombre}} -
+                      {{regimen.Condicion.nombre}} -
+                      {{regimen.estado===1?'Activo':'Inactivo'}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-12">
+                <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">GENERAR CODIGO DE DOCUMENTO
+                </h5>
+                <hr>
+              </div>
+              <div class="col-lg-12">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Documento:</label><br>
+                  <select class="form-control custom-select" (change)="mostrarTipoDocVacionalDos($event)"
+                    formControlName="tipodocumento">
+                    <option value="">Seleccionar</option>
+                    <option value="1">RESOLUCION ADMINISTRATIVA</option>
+                    <option value="2">MEMORANDO</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-12 " id="selectAreaUnoProv">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Seleccionar el area:</label><br>
+                  <select class="form-control custom-select" formControlName="areauno">
+                    <option value="">Seleccionar</option>
+                    <option value="1">Presidencia</option>
+                    <option value="2">Gerencia de Administracion Distrital</option>
+                    <option value="3">Unidad de Administrativa y Finanzas</option>
+                    <option value="4">Oficina de Administracion</option>
+                    
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-12" id="selectAreaDosProv">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Seleccionar el area:</label><br>
+                  <select class="form-control custom-select" formControlName="areados">
+                    <option value="">Seleccionar</option>
+                    <option value="1">GERENCIA DE ADMINISTRACION DISTRITAL</option>
+                    <option value="2">UNIDAD DE ADMINISTRACION Y FINANZAS</option>
+                    <option value="3">OFICINA DE ADMINISTRACION</option> 
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Numero:</label>
+                  <input type="number" class="form-control" id="recipient-name" formControlName="numero">
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Año:</label>
+                  <input type="number" class="form-control" id="recipient-name" formControlName="ano">
+                </div>
+              </div>
+              <div class="col-lg-12">
+                <h5 style="font-weight: 900;color: rgba(84, 0, 0, 0.91);font-size: 13px;">INGRESAR PERIODO VACACIONAL
+                </h5>
+                <hr>
+              </div>
+              <div class="col-lg-5">
+                <div class="form-group">
+                  <div class="form-group">
+                    <label for="recipient-name" class="col-form-label">Desde:</label>
+                    <input class="form-control" type="date" id="example-date-input" formControlName="inicio">
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-5">
+                <div class="form-group">
+                  <div class="form-group">
+                    <label for="recipient-name" class="col-form-label">Hasta:</label>
+                    <input class="form-control" type="date" id="example-date-input" formControlName="fin">
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-2">
+                <div class="form-group">
+                  <div class="form-group">
+                    <label for="recipient-name" class="col-form-label">Periodo:</label>
+                    <input type="number" class="form-control" id="recipient-name" formControlName="periodo">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </form>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal"
+              (click)="cancelartres()">Cancelar</button>
+            <button type="button" class="btn btn-primary" (click)="editarVacacional()"
+              [disabled]="vacacionalEditarForm.invalid">Editar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Editar documento vacacional -->
+  <div class="modal fade" id="editarDocumentoVacacional" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Editar Documento Vacacional</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group validate">
+              <h5>Adjuntar Documento <span class="text-danger">*</span></h5>
+              <div class="controls">
+                <input type="file" name="file" id="filesInput" class="form-control" required="" aria-invalid="false"
+                  #fileDocumentoVacacional (change)="capturarDocumentoVacacional($event)" accept="application/pdf">
+                <div class="help-block">
+                </div>
+              </div>
+            </div>
+          </form>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal"
+              (click)="cancelartres()">Cancelar</button>
+            <button type="button" class="btn btn-primary" (click)="editarDocumentoVacacional()">Editar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

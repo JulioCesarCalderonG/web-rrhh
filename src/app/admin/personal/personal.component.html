@@ -1,0 +1,155 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="row mb-5 d-flex justify-content-between">
+          <div class="col-lg-4">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalPersonal"
+              data-whatever="@mdo">
+              <i class="fa fa-plus-square"></i> Registrar</button>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-group">
+              <select class="form-control custom-select" (change)="mostrarPersonalTipo($event)">
+                <option value="1" selected>Habilitados</option>
+                <option value="0">Deshabilitados</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <app-buscar-personas (search)="buscar($event)"></app-buscar-personas>
+          </div>
+        </div>
+        <div class="col-lg-12">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col" class="text-center">Id</th>
+                <th scope="col" class="text-center">Dni</th>
+                <th scope="col" class="text-center">Nombre</th>
+                <th scope="col" class="text-center">Apellido</th>
+                <th scope="col" class="text-center">Escalafon</th>
+                <th scope="col" class="text-center">Fecha inicio</th>
+                <th class="text-center">Editar</th>
+                <th class="text-center">Eliminar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let personal of listPersonal!">
+                <td scope="row" class="text-center">{{personal.ids}}</td>
+                <td class="text-center">{{personal.dni}}</td>
+                <td >{{personal.nombre}}</td>
+                <td >{{personal.apellido}}</td>
+                <td class="text-center">{{personal.escalafon}}</td>
+                <td class="text-center">{{personal.fecha_inicio}}</td>
+                <td class="text-center" >
+                  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modificarPersonal"
+                    data-whatever="@mdo" (click)="obtenerPersonalId(personal.id)">
+                    <i class="fa fa-pencil"></i>
+                  </button>
+                </td>
+                <td *ngIf="personal.estado===0" class="text-center">
+                  <button type="button" class="btn btn-secondary" (click)="eliminarPersonal(personal.id, 1)">
+                    <i class="fa fa-lock-open"></i>
+                  </button>
+                </td>
+                <td *ngIf="personal.estado===1" class="text-center">
+                  <button type="button" class="btn btn-secondary" (click)="eliminarPersonal(personal.id, 0)">
+                    <i class="fa fa-lock"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="modal fade" id="modalPersonal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel" style="font-weight: bold;">REGISTRAR PERSONAL</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form [formGroup]="personalForm">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Dni:</label>
+                <input type="text" class="form-control" id="recipient-name" formControlName="dni" maxlength="8">
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Nombre:</label>
+                <input type="text" class="form-control" id="recipient-name" formControlName="nombre">
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Apellido:</label>
+                <input type="text" class="form-control" id="recipient-name" formControlName="apellido">
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Escalafon:</label>
+                <input type="text" class="form-control" id="recipient-name" formControlName="escalafon">
+              </div>
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Fecha inicio:</label>
+                  <input class="form-control" type="date" id="example-date-input" formControlName="fecha_inicio">
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelar()">Cancelar</button>
+            <button type="button" class="btn btn-primary" id="registrar" (click)="registrarPersonal()"
+              [disabled]="personalForm.invalid">Registrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modificarPersonal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel" style="font-weight: bold;">EDITAR PERSONAL</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" maxlength="8">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form [formGroup]="personalEditarForm">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Dni:</label>
+                <input type="text" class="form-control" id="recipient-name" formControlName="dni">
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Nombre:</label>
+                <input type="text" class="form-control" id="recipient-name" formControlName="nombre">
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Apellido:</label>
+                <input type="text" class="form-control" id="recipient-name" formControlName="apellido">
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Escalafon:</label>
+                <input type="text" class="form-control" id="recipient-name" formControlName="escalafon">
+              </div>
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Fecha inicio:</label>
+                  <input class="form-control" type="date" id="example-date-input" formControlName="fecha_inicio">
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelar()">Cancelar</button>
+            <button type="button" class="btn btn-primary" (click)="editarPersonal()"
+              [disabled]="personalEditarForm.invalid">Editar</button>
+          </div>
+        </div>
+      </div>
+    </div>

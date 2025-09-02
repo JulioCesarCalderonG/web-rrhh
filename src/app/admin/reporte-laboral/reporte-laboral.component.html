@@ -1,0 +1,564 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <!-- <h4 class="card-title" style="font-weight: 600;">Registrar Datos del personal: {{personal}}</h4>
+        <h6 class="card-subtitle">Por favor seleccione una opcion para ingresar sus datos</h6> -->
+
+        <div class="row">
+          <div class="col lg-12">
+            <h5 class="card-title" style="font-weight: 600">
+              Datos del personal: {{ personal }}
+            </h5>
+            <h6 class="card-subtitle">
+              Por favor seleccione una opcion para ingresar sus datos
+            </h6>
+          </div>
+
+          <div class="col lg-12 text-right">
+            <button type="button" class="btn btn-light" onclick="history.back();">
+              <i class="fa fa-arrow-left"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-6 mb-4">
+            <button type="button" class="btn waves-effect waves-light btn-lg btn-block btn-primary mb-2"
+              data-toggle="modal" data-target="#modalRecordLaboral">
+              <i class="fa fa-user-graduate"></i>
+              Registrar Record Laboral
+            </button>
+          </div>
+          <div class="col-lg-6">
+            <button type="button" class="btn waves-effect waves-light btn-lg btn-block btn-secondary"
+              (click)="generarReporte()">
+              <i class="fa fa-file-pdf"></i> Generar Reporte
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Generar reporte de record laboral -->
+  <div class="col-lg-12" id="tableRecord">
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col" class="text-center">Id</th>
+                <th scope="col" class="text-center">Documento que Autoriza</th>
+                <th scope="col" class="text-center">Dependencia</th>
+                <th scope="col" class="text-center">Cargo Funcional</th>
+                <th scope="col" class="text-center">Desde</th>
+                <th scope="col" class="text-center">Hasta</th>
+                <th scope="col" class="text-center">Hora Inicio</th>
+                <th scope="col" class="text-center">Hora Termino</th>
+                <th scope="col" class="text-center">Ver Documento</th>
+                <th class="text-center">Editar</th>
+                <th class="text-center">Eliminar</th>
+                <th class="text-center">Actualizar Documento</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let general of listRecord" style="font-size: 15px">
+                <th scope="row">{{ general.ids }}</th>
+                <td class="text-center">{{ general.codigo_documento }}</td>
+                <td class="text-center">{{ general.dependencia }}</td>
+                <td class="text-center">{{ general.Cargo.descripcion }}</td>
+                <td class="text-center">{{ general.inicio }}</td>
+                <td class="text-center">
+                  {{
+                  general.fin === "2030-12-30" ? "ACTUALIDAD" : general.fin
+                  }}
+                </td>
+                <td class="text-center">{{ general.horainicial }}</td>
+                <td class="text-center">{{ general.horafinal }}</td>
+                <td class="text-center">
+                  <a href="{{ url }}/{{ general.documento }}" class="btn btn-success" target="_blank">
+                    <i class="fa fa-eye"></i>
+                  </a>
+                </td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-primary" data-toggle="modal"
+                    data-target="#modalEditarRecordLaboral" data-whatever="@mdo"
+                    (click)="obtenerDatosRecordId(general.id)">
+                    <i class="fa fa-edit"></i>
+                  </button>
+                </td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-danger" (click)="eliminarRecord(general.id)">
+                    <i class="fa fa-trash-o"></i>
+                  </button>
+                </td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-warning" data-toggle="modal"
+                    data-target="#editarDocumentoLaboral" data-whatever="@mdo"
+                    (click)="obtenerIdDocumentoLaboral(general.id)">
+                    <i class="fa fa-file-pdf-o"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Agregar record laboral -->
+<div class="modal fade" id="modalRecordLaboral" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">
+          Registrar Record Laboral
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="generalForm">
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 class="title">GENERAR TIPO DE PERIODO</h5>
+              <hr />
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de periodo:</label><br />
+                <select class="form-control custom-select" formControlName="periodo">
+                  <option value="">Seleccionar</option>
+                  <option value="1">PRINCIPAL</option>
+                  <option value="2">ENCARGO DE FUNCIONES</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 class="title">GENERAR CODIGO DE DOCUMENTO</h5>
+              <hr />
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Documento:</label><br />
+                <select class="form-control custom-select" formControlName="tipodocumento">
+                  <option selected value="">Seleccionar</option>
+                  <option *ngFor="let tipodoc of listTipodocumento" value="{{ tipodoc.id }}">
+                    {{ tipodoc.descripcion }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Numero:</label>
+                <input type="number" class="form-control" formControlName="numero" />
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <div class="form-group">
+                <label class="col-form-label">Año:</label>
+                <input type="text" class="form-control" [maxlength]="4" formControlName="ano" />
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="col-form-label">Seleccionar Tipo de Sigla:</label><br />
+                <select class="form-control custom-select" (change)="buscarSigla($event)" formControlName="tiposigla">
+                  <option value="0">Seleccionar</option>
+                  <option value="1">Organo</option>
+                  <option value="2">Unidad Organica</option>
+                  <option value="3">Area</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="col-form-label">Seleccionar Area que autoriza:</label><br />
+                <select class="form-control custom-select" formControlName="autoriza">
+                  <option value="0">Seleccionar</option>
+                  <option *ngFor="let autoriza of listAutoriza" value="{{ autoriza.id }}">
+                    {{ autoriza.nombre }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 class="title">GENERAR DEPENDENCIA</h5>
+              <hr />
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="col-form-label">Seleccionar Tipo de Dependecia:</label><br />
+                <select class="form-control custom-select" (change)="buscarDependencia($event)"
+                  formControlName="tipodependencia">
+                  <option selected value="">Seleccionar</option>
+                  <option value="1">Organo</option>
+                  <option value="2">Unidad Organica</option>
+                  <option value="3">Area</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="col-form-label">Seleccionar Dependencia:</label><br />
+                <select class="form-control custom-select" formControlName="dependencia">
+                  <option selected value="">Seleccionar</option>
+                  <option *ngFor="let dependencia of listDependencia" value="{{ dependencia.id }}">
+                    {{ dependencia.nombre }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 class="title">INGRESAR CARGO</h5>
+              <hr />
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="col-form-label">Seleccionar Tipo de Personal:</label><br />
+                <select class="form-control custom-select" formControlName="cargo"
+                  (change)="filtrarTipoPersonal($event)">
+                  <option selected value="">Seleccionar</option>
+                  <option *ngFor="let tipopersonal of listTipoPersonal" value="{{ tipopersonal.id }}">
+                    {{ tipopersonal.titulo }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="col-form-label">Seleccionar Cargo:</label><br />
+                <select class="form-control custom-select" formControlName="cargo">
+                  <option selected value="">Seleccionar</option>
+                  <option *ngFor="let cargo of listCargo" value="{{ cargo.id }}">
+                    {{ cargo.descripcion }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 class="title">INGRESAR PERIODO LABORAL</h5>
+              <hr />
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <div class="form-group">
+                  <label class="col-form-label">Desde:</label>
+                  <input class="form-control" type="date" min='1900-01-01' max='9999-12-31' id="desde" formControlName="desde"
+                    (change)="onFechaUno($event)" />
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <div class="form-group">
+                  <label class="col-form-label">Hasta:</label>
+                  <input class="form-control" type="date" min='1900-01-01' max='9999-12-31' id="hasta" formControlName="hasta"
+                    (change)="onFechaDos($event)" />
+                </div>
+              </div>
+            </div>
+            <!-- Aca comiensza el cambio de horas -->
+            <div class="col-lg-12 invisible" id="invisible">
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <div class="form-group">
+                      <label class="col-form-label">Hora Inicio:</label>
+                      <input class="form-control" type="time" id="horainicial" formControlName="horainicial"
+                        />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <div class="form-group">
+                      <label class="col-form-label">Hora Fin:</label>
+                      <input class="form-control" type="time" id="horafinal" formControlName="horafinal"
+                         />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 class="title">INGRESAR DOCUMENTO QUE AUTORIZA</h5>
+              <hr />
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group validate">
+                <h5>Adjuntar Documento <span class="text-danger">*</span></h5>
+                <div class="controls">
+                  <input type="file" name="file" class="form-control" required="" aria-invalid="false" #fileInput
+                    (change)="capturarFile($event)" accept="application/pdf" />
+                  <div class="help-block"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelaruno()">
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" id="registrar" (click)="registrarGeneral()"
+          [disabled]="generalForm.invalid">
+          Registrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Editar record laboral -->
+<div class="modal fade" id="modalEditarRecordLaboral" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">
+          Editar Record Laboral
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="recordEditarForm">
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 class="title">GENERAR TIPO DE PERIODO</h5>
+              <hr />
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label class="col-form-label">Seleccionar Tipo de Documento:</label><br />
+                <select class="form-control custom-select" formControlName="periodo">
+                  <option value="">Seleccionar</option>
+                  <option value="1">PRINCIPAL</option>
+                  <option value="2">ENCARGO DE FUNCIONES</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <h5 class="title">GENERAR CODIGO DE DOCUMENTO</h5>
+              <hr />
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="col-form-label">Seleccionar Tipo de Documento:</label><br />
+                <select class="form-control custom-select" formControlName="tipodocumento">
+                  <option selected value="">Seleccionar</option>
+                  <option *ngFor="let tipodoc of listTipodocumento" value="{{ tipodoc.id }}">
+                    {{ tipodoc.descripcion }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <div class="form-group">
+                <label class="col-form-label">Numero:</label>
+                <input type="text" class="form-control" formControlName="numero" />
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <div class="form-group">
+                <label class="col-form-label">Año:</label>
+                <input type="text" class="form-control" [maxlength]="4"  formControlName="ano" />
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="col-form-label">Seleccionar Tipo de Sigla:</label><br />
+                <select class="form-control custom-select" (change)="buscarSigla($event)" formControlName="tiposigla">
+                  <option value="0">Seleccionar</option>
+                  <option value="1">Organo</option>
+                  <option value="2">Unidad Organica</option>
+                  <option value="3">Area</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="col-form-label">Seleccionar Area que autoriza:</label><br />
+                <select class="form-control custom-select" formControlName="autoriza">
+                  <option value="0">Seleccionar</option>
+                  <option *ngFor="let autoriza of listAutoriza" value="{{ autoriza.id }}">
+                    {{ autoriza.nombre }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 class="title">GENERAR DEPENDENCIA</h5>
+              <hr />
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="col-form-label">Seleccionar Tipo de Dependecia:</label><br />
+                <select class="form-control custom-select" (change)="buscarDependencia($event)"
+                  formControlName="tipodependencia">
+                  <option selected value="">Seleccionar</option>
+                  <option value="1">Organo</option>
+                  <option value="2">Unidad Organica</option>
+                  <option value="3">Area</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="col-form-label">Seleccionar Dependencia:</label><br />
+                <select class="form-control custom-select" formControlName="dependencia">
+                  <option selected value="">Seleccionar</option>
+                  <option *ngFor="let dependencia of listDependencia" value="{{ dependencia.id }}">
+                    {{ dependencia.nombre }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 class="title">INGRESAR CARGO</h5>
+              <hr />
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Tipo de Personal:</label><br />
+                <select class="form-control custom-select" formControlName="tipo_personal"
+                  (change)="filtrarTipoPersonal($event)">
+                  <option selected value="">Seleccionar</option>
+                  <option *ngFor="let tipopersonal of listTipoPersonal" value="{{ tipopersonal.id }}">
+                    {{ tipopersonal.titulo }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Seleccionar Cargo:</label><br />
+                <select class="form-control custom-select" formControlName="cargo">
+                  <option selected value="">Seleccionar</option>
+                  <option *ngFor="let cargo of listCargo" value="{{ cargo.id }}">
+                    {{ cargo.descripcion }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <h5 class="title">INGRESAR PERIODO LABORAL</h5>
+              <hr />
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <div class="form-group">
+                  <label class="col-form-label">Desde:</label>
+                  <input class="form-control" type="date" min='1900-01-01' max='9999-12-31' formControlName="desde" (change)="onFechaUnoTwo($event)" />
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <div class="form-group">
+                  <label class="col-form-label">Hasta:</label>
+                  <input class="form-control" type="date" min='1900-01-01' max='9999-12-31' formControlName="hasta" (change)="onFechaDosTwo($event)" />
+                </div>
+              </div>
+            </div>
+            <!-- Aca comiensza el cambio de horas -->
+            <div class="col-lg-12 invisible2" id="invisible2">
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <div class="form-group">
+                      <label class="col-form-label">Hora Inicio:</label>
+                      <input class="form-control" type="time" formControlName="horainicial"
+                        />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <div class="form-group">
+                      <label class="col-form-label">Hora Fin:</label>
+                      <input class="form-control" type="time" formControlName="horafinal"
+                         />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelaruno()">
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" (click)="actualizarGeneral()"
+          [disabled]="recordEditarForm.invalid">
+          Editar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Editar documento laboral -->
+<div class="modal fade" id="editarDocumentoLaboral" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">
+          Editar Documento Laboral
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="col-lg-12">
+            <div class="form-group validate">
+              <h5>Adjuntar Documento <span class="text-danger">*</span></h5>
+              <div class="controls">
+                <input type="file" name="file" class="form-control" required="" aria-invalid="false"
+                  #fileDocumentoLaboral (change)="capturarDocumentoLaboral($event)" accept="application/pdf" />
+                <div class="help-block"></div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelaruno()">
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" (click)="editarDocumentoLaboral()">
+          Editar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

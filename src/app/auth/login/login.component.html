@@ -1,0 +1,44 @@
+<!-- ============================================================== -->
+<!-- Main wrapper - style you can find in pages.scss -->
+<!-- ============================================================== -->
+<section id="wrapper" class="login-register login-sidebar"
+  style="background-image:url(./assets/images/background/header10.png);">
+  <div class="login-box card">
+    <div class="card-body">
+      <form class="form-horizontal form-material" [formGroup]="dataLogin" (ngSubmit)="login()">
+        <a href="javascript:void(0)" class="text-center db imagentitle"><img src="./assets/images/icon-logo2.png"
+            alt="Home" /><br /></a>
+        <div class="text-center titulo">
+          <h4 class="titlegeneral">PODER JUDICIAL</h4>
+          <h6 class="titlegeneral">Corte Superior de Justicia de Ucayali</h6>
+          <h6 class="titlegeneral">SISTEMA DE GESTION DE RECURSOS HUMANOS</h6>
+        </div>
+        <div class="form-group m-t-40">
+          <div class="col-xs-12">
+            <input class="form-control" type="text" required="" placeholder="Usuario" formControlName="usuario">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-xs-12">
+            <input class="form-control" type="password" required="" placeholder="Contraseña" formControlName="password">
+          </div>
+        </div>
+        <div class="form-group text-center m-t-20">
+          <div class="col-xs-12">
+            <button class="btn btn-danger btn-lg btn-block text-uppercase btn-rounded" type="submit"
+              [disabled]="dataLogin.invalid">INGRESAR</button>
+          </div>
+        </div>
+        <div class="text-center titulo2">
+            <h5 class="titlegeneral2">Dr. Tullio Bermeo Turchi</h5>
+            <h5 class="titlegeneral2">Presidente</h5>
+            <h6 class="titlegeneral2">Gestión 2023 - 2024</h6>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</section>
+<!-- ============================================================== -->
+<!-- End Wrapper -->
+<!-- ============================================================== -->
