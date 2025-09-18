@@ -18,11 +18,12 @@ export class AdministradorGuard  {
       if (dataDecode.exp < date.getTime() / 1000) {
         return this.redirect();
       }
-      if (dataDecode.cargo === 'UA' || dataDecode.cargo==='D' ) {
+      /* if (dataDecode.cargo === 'UA' || dataDecode.cargo==='D' ) {
         
         return true;
-      }
-      return this.redirect();
+      } */
+     return true
+      //return this.redirect();
     }
     return this.redirect();
     /* if (this.authService.loggedIn()) {
@@ -36,6 +37,8 @@ export class AdministradorGuard  {
     return false;
   }
   decodeToken() {
+    console.log(this.authService.getToken());
+    
     return jwtDecode(`${this.authService.getToken()}`);
   }
 

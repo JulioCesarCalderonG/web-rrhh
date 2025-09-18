@@ -13,12 +13,13 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AdministradorGuard } from './guards/administrador.guard';
 import { InterceptorInterceptor } from './interceptor/interceptor.interceptor';
 import { provideSweetAlert2 } from '@sweetalert2/ngx-sweetalert2';
+import { ToastrModule } from 'ngx-toastr';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    NopagefoundComponent,
+    NopagefoundComponent
   ],
   imports: [
     BrowserModule,
@@ -30,7 +31,8 @@ import { provideSweetAlert2 } from '@sweetalert2/ngx-sweetalert2';
     JefeModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    ToastrModule.forRoot(),
   ],
   providers: [
     AdministradorGuard,

@@ -9,6 +9,7 @@ import { pathUrl } from '../api/api';
 })
 export class AuthService {
   url = `${pathUrl}/auth`;
+  url2 = `${pathUrl}/usuario`;
   constructor(
     private http: HttpClient,
     private router:Router,
@@ -26,5 +27,8 @@ export class AuthService {
   }
   resetPassword(body:FormData):Observable<any>{
     return this.http.put(`${this.url}/password`,body);
+  }
+  login2(data:FormData):Observable<any>{
+    return this.http.post(`${this.url2}/login`,data);
   }
 }

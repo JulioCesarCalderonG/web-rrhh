@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { AuthService } from '../../servicios/auth.service';
+import { MenuService } from 'src/app/servicios/menu.service';
+import { MenuUsuario, ResultMenuUsuario } from 'src/app/interfaces/menu.usuario';
 
 @Component({
   selector: 'app-sidebar',
@@ -13,9 +15,20 @@ export class SidebarComponent implements OnInit {
 
   resetForm:FormGroup;
   personal:string='';
+  menu:MenuUsuario[]=[
+    {
+      nomMenu:'',
+      submenu:[{
+        titulo:'',
+        subMenu:''
+      }],
+      titulo:''
+    }
+  ];
   constructor(
     private authService:AuthService,
-    private fb:FormBuilder
+    private fb:FormBuilder,
+    private menuServ:MenuService
   ) {
     this.resetForm = this.fb.group({
       passworduno:['',Validators.required],
@@ -25,6 +38,7 @@ export class SidebarComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.mostrarMenu();
   }
   logout(){
     this.authService.loggoud();
@@ -63,6 +77,18 @@ export class SidebarComponent implements OnInit {
     this.resetForm.setValue({
       passworduno:'',
       passworddos:''
+    })
+  }
+   mostrarMenu(){
+    this.menuServ.getMenuUsuario().subscribe({
+      next:(data:ResultMenuUsuario)=>{
+        console.log(data);
+        this.menu=data.menu;
+      },
+      error:err=>{
+        console.log(err);
+        
+      }
     })
   }
 }
