@@ -1,1 +1,175 @@
-<p>perfil works!</p>
+<mat-card class="mb-1">
+  <mat-card-content>
+    <div class="row d-flex justify-content-end">
+      <div class="col-lg-6 d-flex ">
+        <select class="form-control custom-select" (change)="mostrarTipo($event)">
+          <option value="1" selected>Activo</option>
+          <option value="0">Inactivo</option>
+        </select>
+        <button type="button" class="btn btn-primary ml-1" data-toggle="modal" data-target="#modalPersonal"
+          data-whatever="@mdo">
+          <i class="fa fa-plus-square"></i> Registrar</button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+<mat-card>
+  <mat-card-content>
+    <div>
+      <table mat-table [dataSource]="dataSource">
+
+        <ng-container matColumnDef="nombre">
+          <th mat-header-cell *matHeaderCellDef> Nombre Perfil </th>
+          <td mat-cell *matCellDef="let element"> {{element.nombre}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef> Estado </th>
+          <td mat-cell *matCellDef="let element">
+            <p class="text-primary" *ngIf="element.estado">Activo</p>
+            <p class="text-danger" *ngIf="!element.estado">Inactivo</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="submenu">
+          <th mat-header-cell *matHeaderCellDef> Opciones </th>
+          <td mat-cell *matCellDef="let element">
+            <a class="btn btn-secondary" (click)="obtenerIdPerfil(element.idPerfil)" data-toggle="modal"
+              data-target="#modalSubmenu" data-whatever="@mdo"><i class="fa fa-dashboard"></i></a>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef> Acciones </th>
+          <td mat-cell *matCellDef="let element">
+            <a class="btn btn-warning mr-1" (click)="obtenerDatos(element)" data-toggle="modal"
+              data-target="#modalEditarPerfil" data-whatever="@mdo"> <i class="fa fa-edit"></i> </a>
+            <a class="btn btn-danger" *ngIf="element.estado" (click)="eliminar(element.idPerfil,0)"> <i
+                class="fa fa-lock"></i> </a>
+            <a class="btn btn-danger" *ngIf="!element.estado" (click)="eliminar(element.idPerfil,1)"> <i
+                class="fa fa-unlock"></i> </a>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+      <mat-paginator [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons
+        aria-label="Select page of periodic elements">
+      </mat-paginator>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- MODAL CREAR -->
+<div class="modal fade" id="modalPersonal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel" style="font-weight: bold;">REGISTRAR PERFIL</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="perfilForm">
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Nombre del Perfil:</label>
+            <input type="text" class="form-control" id="recipient-name" formControlName="nombre">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelar()">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="registrar" (click)="registrarPerfil()"
+          [disabled]="perfilForm.invalid">Registrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- MODAL EDITAR -->
+<div class="modal fade" id="modalEditarPerfil" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel" style="font-weight: bold;">EDITAR PERFIL</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="perfilEditForm">
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Nombre del Perfil:</label>
+            <input type="text" class="form-control" id="recipient-name" formControlName="nombre">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelar()">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="registrar" (click)="editarPerfil()"
+          [disabled]="perfilEditForm.invalid">Editar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SUBMENU -->
+<div class="modal fade" id="modalSubmenu" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel" style="font-weight: bold;">REGISTRO DE MENU/SUBMENUS</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-lg-6 scroll">
+            <h4>LISTA DE MENUS POR ASIGNAR AL PERFIL</h4>
+              <div *ngFor="let menu of listSubNotInclude" class="menu-group">
+              <h3>{{ menu.nomMenu | titlecase }}</h3>
+
+              <div *ngFor="let sub of menu.submenu" class="submenu-item">
+                <mat-checkbox [(ngModel)]="sub.selected">
+                  {{ sub.subMenu }}
+                </mat-checkbox>
+              </div>
+
+            </div>
+
+            <button class="mt-2" mat-raised-button color="warning" (click)="getSeleccionadosNotInclude()">
+              AGREGAR
+            </button>
+          </div>
+           <div class="col-lg-6 scroll">
+            <h4>LISTA DE MENU ASIGNADOS AL PERFIL</h4>
+            <div *ngFor="let menu of listSubInclude" class="menu-group">
+              <h3>{{ menu.nomMenu | titlecase }}</h3>
+
+              <div *ngFor="let sub of menu.submenu" class="submenu-item">
+                <mat-checkbox [(ngModel)]="sub.selected">
+                  {{ sub.subMenu }}
+                </mat-checkbox>
+              </div>
+
+            </div>
+
+            <button class="mt-2" mat-raised-button color="warning" (click)="getSeleccionadosInclude()">
+              QUITAR
+            </button>
+
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelar()">Cancelar</button>
+        <!-- <button type="button" class="btn btn-primary" id="registrar">Registrar</button> -->
+      </div>
+    </div>
+  </div>
+</div>

@@ -4,7 +4,8 @@ import { MenuService } from '../servicios/menu.service';
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
-  styles: [
+  styleUrls: [
+    './admin.component.css'
   ]
 })
 export class AdminComponent implements OnInit {

@@ -8,7 +8,8 @@ import { MenuUsuario, ResultMenuUsuario } from 'src/app/interfaces/menu.usuario'
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
-  styles: [
+  styleUrls: [
+    './sidebar.component.css'
   ]
 })
 export class SidebarComponent implements OnInit {
@@ -82,8 +83,10 @@ export class SidebarComponent implements OnInit {
    mostrarMenu(){
     this.menuServ.getMenuUsuario().subscribe({
       next:(data:ResultMenuUsuario)=>{
-        console.log(data);
-        this.menu=data.menu;
+        this.menu = data.menu.map(item => ({
+        ...item,
+        expanded: false
+      }));
       },
       error:err=>{
         console.log(err);
@@ -91,4 +94,8 @@ export class SidebarComponent implements OnInit {
       }
     })
   }
+  toggleMenu(index: number): void {
+  this.menu[index].expanded = !this.menu[index].expanded;
+}
+
 }

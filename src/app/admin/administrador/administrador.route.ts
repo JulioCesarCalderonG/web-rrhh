@@ -5,6 +5,7 @@ import { MenuComponent } from './menu/menu.component';
 import { SubMenuComponent } from './sub-menu/sub-menu.component';
 import { PerfilComponent } from './perfil/perfil.component';
 import { UsuarioComponent } from './usuario/usuario.component';
+import { UsuarioPerfilComponent } from './usuario-perfil/usuario-perfil.component';
 
 
 const routes: Routes = [
@@ -16,6 +17,7 @@ const routes: Routes = [
             {path:'submenu',component:SubMenuComponent},
             {path:'perfil',component:PerfilComponent},
             {path:'usuario',component:UsuarioComponent},
+            {path:'usuarioperfil',component:UsuarioPerfilComponent},
         ] 
     },
 ];

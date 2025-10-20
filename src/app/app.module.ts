@@ -14,6 +14,7 @@ import { AdministradorGuard } from './guards/administrador.guard';
 import { InterceptorInterceptor } from './interceptor/interceptor.interceptor';
 import { provideSweetAlert2 } from '@sweetalert2/ngx-sweetalert2';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 @NgModule({
@@ -33,6 +34,7 @@ import { ToastrModule } from 'ngx-toastr';
     ReactiveFormsModule,
     HttpClientModule,
     ToastrModule.forRoot(),
+    BrowserAnimationsModule,
   ],
   providers: [
     AdministradorGuard,

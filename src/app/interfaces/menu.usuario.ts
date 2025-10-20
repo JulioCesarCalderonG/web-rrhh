@@ -8,6 +8,7 @@ export interface MenuUsuario {
     nomMenu: string;
     titulo:  string;
     submenu: Submenu[];
+    expanded?: boolean; 
 }
 
 export interface Submenu {

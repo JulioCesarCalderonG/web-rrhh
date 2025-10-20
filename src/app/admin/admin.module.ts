@@ -20,6 +20,12 @@ import { AdministradorRoutingModule } from './administrador/administrador.route'
 import { PersonaRoutingModule } from './persona/persona.route';
 import { ReporteRoutingModule } from './reporte/reporte.route';
 import { RecordRoutingModule } from './record/record.route';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDividerModule } from '@angular/material/divider';
 
 
 
@@ -52,6 +58,12 @@ import { RecordRoutingModule } from './record/record.route';
     HttpClientModule,
     SharedModule,
     ToastrModule.forRoot(),
+    MatTableModule, 
+    MatPaginatorModule,
+    MatCardModule, 
+    MatButtonModule,
+    MatCheckboxModule,
+    MatDividerModule
   ],
   providers:[
     provideSweetAlert2()

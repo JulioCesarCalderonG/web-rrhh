@@ -7,6 +7,14 @@ import { UsuarioComponent } from './usuario/usuario.component';
 import { AdministradorComponent } from './administrador.component';
 import { AdministradorRoutingModule } from "./administrador.route";
 import { RouterModule } from '@angular/router';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { UsuarioPerfilComponent } from './usuario-perfil/usuario-perfil.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
     declarations: [
@@ -14,12 +22,21 @@ import { RouterModule } from '@angular/router';
         SubMenuComponent,
         PerfilComponent,
         UsuarioComponent,
-        AdministradorComponent
+        UsuarioPerfilComponent,
+        AdministradorComponent        
     ],
     imports: [
     CommonModule,
     RouterModule,
-    AdministradorRoutingModule
+    AdministradorRoutingModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatTableModule, 
+    MatPaginatorModule,
+    MatCardModule, 
+    MatButtonModule,
+    MatCheckboxModule,
+        MatDividerModule
     ],
     exports: [     
     ],
