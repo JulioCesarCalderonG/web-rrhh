@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { PersonalService } from '../../../servicios/personal.service';
-
+import { TableMaterialComponent }
+  from '../../../shared/table-material/table-material.component';
+import { ColumnaTabla } from 'src/app/interfaces/columna-tabla';
 @Component({
   selector: 'app-personal',
   templateUrl: './personal.component.html',
@@ -18,7 +20,20 @@ export class PersonalComponent implements OnInit {
   inputBuscar: string = '';
   carga: boolean = false;
   p: number = 1;
+  //SHARED TABLA GENERAL
+  columnasPersonal:ColumnaTabla[] = [
+    { campo: 'dni', titulo: 'DNI' },
+    { campo: 'nombre', titulo: 'Nombres' },
+    { campo: 'apellido', titulo: 'Apellidos' },
+    { campo: 'escalafon', titulo: 'Escalafon' },
+    { campo: 'fecha_inicio', titulo: 'FechaInicio' }
+  ];
 
+  total = 0;
+  pageSize = 10;
+
+  @ViewChild(TableMaterialComponent)
+  tabla!: TableMaterialComponent;
   constructor(
     private personalService: PersonalService,
     private fb: FormBuilder,
@@ -41,10 +56,10 @@ export class PersonalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.mostrarPersonal();
+    this.mostrarPersonal(0,this.pageSize);
   }
 
-  mostrarPersonal() {
+  mostrarPersonal(pageIndex: number, pageSize: number) {
     this.carga = true;
     if (this.carga) {
       Swal.fire({
@@ -58,8 +73,11 @@ export class PersonalComponent implements OnInit {
     }
     this.personalService.getPersonal(this.estado, this.inputBuscar).subscribe(
       (data) => {
-        this.listPersonal = data.resp;
-        this.carga = false;
+        //this.listPersonal = data.resp;
+        this.carga = false;        
+        //TABLA GENERAL SHARED
+        this.total = 800;
+        this.tabla.setData(data.resp);
         if (!this.carga) {
           Swal.close();
         }
@@ -72,6 +90,14 @@ export class PersonalComponent implements OnInit {
         console.log(error);
       }
     );
+  }
+  editar(event:any){
+    console.log(event);
+    
+  }
+  eliminar(event:any){
+    console.log(event);
+    
   }
   mostrarPersonal2() {
     this.personalService.getPersonal(this.estado, this.inputBuscar).subscribe(
@@ -111,31 +137,31 @@ export class PersonalComponent implements OnInit {
         this.mostrarPersonal2();
         this.cancelar();
         cargando = false;
-          if (cargando === false) {
-            setTimeout(() => {
-              document
-                .getElementById('registrar')
-                ?.classList.remove('registrar');
-            }, 1500);
-          }
+        if (cargando === false) {
+          setTimeout(() => {
+            document
+              .getElementById('registrar')
+              ?.classList.remove('registrar');
+          }, 1500);
+        }
       },
       (error) => {
         console.log(error);
         cargando = false;
         Swal.fire({
-          position:"top-end",
+          position: "top-end",
           icon: "warning",
           title: error.error.errors[0].msg,
           showConfirmButton: false,
-          timer: 1500          
+          timer: 1500
         });
-          if (cargando === false) {
-            setTimeout(() => {
-              document
-                .getElementById('registrar')
-                ?.classList.remove('registrar');
-            }, 1500);
-          }
+        if (cargando === false) {
+          setTimeout(() => {
+            document
+              .getElementById('registrar')
+              ?.classList.remove('registrar');
+          }, 1500);
+        }
       }
     );
   }
@@ -182,7 +208,7 @@ export class PersonalComponent implements OnInit {
       if (result.isConfirmed) {
         this.personalService.deletePersonal(id, estado).subscribe(
           (data) => {
-            this.mostrarPersonal();
+            this.mostrarPersonal(0,this.pageSize);
             Swal.fire(
               estado === 1 ? 'Habilitado' : 'Deshabilitado',
               'Correcto',
@@ -200,7 +226,7 @@ export class PersonalComponent implements OnInit {
   mostrarPersonalTipo(event: any) {
     console.log(event.target.value);
     this.estado = event.target.value;
-    this.mostrarPersonal();
+    this.mostrarPersonal(0,this.pageSize);
   }
 
   obtenerPersonalId(id: number) {
