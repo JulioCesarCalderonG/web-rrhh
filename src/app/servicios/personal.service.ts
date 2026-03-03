@@ -12,8 +12,8 @@ export class PersonalService {
   private url = `${pathUrl}/personal`
   constructor(private http:HttpClient, private router:Router) { }
 
-  getPersonal(estado:string='1', buscar:string=''):Observable<any>{
-    return this.http.get(this.url,{params:{estado,buscar}});
+  getPersonal(estado:string='1', buscar:string='',page:number=1,limit:number=50):Observable<any>{
+    return this.http.get(this.url,{params:{estado,buscar,page,limit}});
   }
 
   getPersonalId(id:string|number):Observable<any>{

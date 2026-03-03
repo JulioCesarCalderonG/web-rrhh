@@ -6,6 +6,8 @@ import { PersonalService } from '../../../servicios/personal.service';
 import { TableMaterialComponent }
   from '../../../shared/table-material/table-material.component';
 import { ColumnaTabla } from 'src/app/interfaces/columna-tabla';
+import { PersonalResult } from 'src/app/interfaces/result-personal';
+import { PageEvent } from '@angular/material/paginator';
 @Component({
   selector: 'app-personal',
   templateUrl: './personal.component.html',
@@ -19,7 +21,7 @@ export class PersonalComponent implements OnInit {
   estado: string = '1';
   inputBuscar: string = '';
   carga: boolean = false;
-  p: number = 1;
+
   //SHARED TABLA GENERAL
   columnasPersonal:ColumnaTabla[] = [
     { campo: 'dni', titulo: 'DNI' },
@@ -28,12 +30,12 @@ export class PersonalComponent implements OnInit {
     { campo: 'escalafon', titulo: 'Escalafon' },
     { campo: 'fecha_inicio', titulo: 'FechaInicio' }
   ];
+  page: number = 1;
+  total:number = 0;
+  pageSize:number = 30;
 
-  total = 0;
-  pageSize = 10;
+  @ViewChild(TableMaterialComponent) tabla!: TableMaterialComponent;
 
-  @ViewChild(TableMaterialComponent)
-  tabla!: TableMaterialComponent;
   constructor(
     private personalService: PersonalService,
     private fb: FormBuilder,
@@ -59,7 +61,7 @@ export class PersonalComponent implements OnInit {
     this.mostrarPersonal(0,this.pageSize);
   }
 
-  mostrarPersonal(pageIndex: number, pageSize: number) {
+  mostrarPersonal(page: number, limit: number) {
     this.carga = true;
     if (this.carga) {
       Swal.fire({
@@ -71,13 +73,13 @@ export class PersonalComponent implements OnInit {
         },
       });
     }
-    this.personalService.getPersonal(this.estado, this.inputBuscar).subscribe(
-      (data) => {
-        //this.listPersonal = data.resp;
-        this.carga = false;        
-        //TABLA GENERAL SHARED
-        this.total = 800;
+    this.personalService.getPersonal(this.estado, this.inputBuscar,page,limit).subscribe(
+      (data:PersonalResult) => {
+        this.carga = false;
+        this.total = data.totalRegistros;
+        //this.pageSize = data.totalPaginas;
         this.tabla.setData(data.resp);
+        //page
         if (!this.carga) {
           Swal.close();
         }
@@ -91,13 +93,20 @@ export class PersonalComponent implements OnInit {
       }
     );
   }
+
   editar(event:any){
     console.log(event);
-    
   }
   eliminar(event:any){
     console.log(event);
     
+  }
+  cambiarPagina(event:PageEvent){
+  this.page = event.pageIndex + 1;
+  this.pageSize = event.pageSize;
+  console.log(this.page,this.pageSize);
+  this.mostrarPersonal(this.page,this.pageSize);  
+  
   }
   mostrarPersonal2() {
     this.personalService.getPersonal(this.estado, this.inputBuscar).subscribe(

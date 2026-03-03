@@ -34,9 +34,11 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         </table>
 
-        <!-- <mat-paginator [length]="totalRegistros" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20, 50]"
-                (page)="pageChange.emit($event)"
-                >
-            </mat-paginator> -->
+        <mat-paginator
+  [length]="totalRegistros"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="pageSizeOptions"
+  (page)="onPageChange($event)">
+</mat-paginator>
     </mat-card-content>
 </mat-card>

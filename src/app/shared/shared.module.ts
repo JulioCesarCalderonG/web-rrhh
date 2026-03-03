@@ -42,7 +42,8 @@ import { MatCardModule } from '@angular/material/card';
     ReactiveFormsModule,
     FormsModule,
     MatTableModule,
-    MatCardModule
+    MatCardModule,
+    MatPaginatorModule
 ]
 })
 export class SharedModule { }
