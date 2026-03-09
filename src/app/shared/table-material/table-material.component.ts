@@ -17,7 +17,8 @@ export class TableMaterialComponent implements OnInit,OnChanges  {
   @Output() pageChange = new EventEmitter<PageEvent>();
   @Output() editar = new EventEmitter<any>();
   @Output() eliminar = new EventEmitter<any>();
-
+  @Output() reporte = new EventEmitter<any>();
+  @Input() tipo: number = 1;
   dataSource = new MatTableDataSource<any>();
 
   displayedColumns: string[] = [];
@@ -46,4 +47,8 @@ export class TableMaterialComponent implements OnInit,OnChanges  {
   onPageChange(event: PageEvent) {
     this.pageChange.emit(event);
   }
+
+  getValor(row: any, campo: string): any {
+  return campo.split('.').reduce((obj, key) => obj?.[key], row);
+}
 }

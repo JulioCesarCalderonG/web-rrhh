@@ -1,0 +1,9 @@
+.tabla-container {
+    max-height: 70vh;   /* altura relativa a la pantalla */
+    overflow-y: auto;   /* scroll vertical */
+    overflow-x: auto;   /* scroll horizontal si hay muchas columnas */
+}
+
+table {
+    width: 100%;
+}

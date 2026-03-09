@@ -2,13 +2,13 @@
 import { Routes, RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { AreaComponent } from './persona/area/area.component';
-import { CargoComponent } from './persona/cargo/cargo.component';
-import { DependenciaComponent } from './persona/dependencia/dependencia.component';
-import { TipodocumentoComponent } from './tipodocumento/tipodocumento.component';
+import { AreaComponent } from './datos/area/area.component';
+import { CargoComponent } from './datos/cargo/cargo.component';
+import { DependenciaComponent } from './datos/dependencia/dependencia.component';
+
 import { GeneralComponent } from './general/general.component';
-import { TipoLicenciaComponent } from './tipo-licencia/tipo-licencia.component';
-import { DetalleLicenciaComponent } from './detalle-licencia/detalle-licencia.component';
+import { TipoLicenciaComponent } from './licencia/tipo-licencia/tipo-licencia.component';
+import { DetalleLicenciaComponent } from './licencia/detalle-licencia/detalle-licencia.component';
 import { HistorialComponent } from './historial/historial.component';
 import { RegimenLaboralComponent } from './persona/regimen-laboral/regimen-laboral.component';
 import { AdministradorGuard } from '../guards/administrador.guard';
@@ -21,29 +21,43 @@ const routes: Routes = [
         component: AdminComponent,
         children: [
             { path: '', component: DashboardComponent },
-             {
-                    path: 'administrador',
-                    loadChildren: () =>
-                    import('./administrador/administrador.module').then(m => m.AdministradorModule)
-                },
             {
-                    path: 'personal',
-                    loadChildren: () =>
+                path: 'administrador',
+                loadChildren: () =>
+                    import('./administrador/administrador.module').then(m => m.AdministradorModule)
+            },
+            {
+                path: 'personal',
+                loadChildren: () =>
                     import('./persona/persona.module').then(m => m.PersonaModule)
-                },
-                {
-                    path: 'reporte',
-                    loadChildren: () =>
+            },
+            {
+                path: 'datos',
+                loadChildren: () =>
+                    import('./datos/datos.module').then(m => m.DatosModule)
+            },
+            {
+                path: 'documento',
+                loadChildren: () =>
+                    import('./documento/documento.module').then(m => m.DocumentoModule)
+            },
+            {
+                path: 'licencia',
+                loadChildren: () =>
+                    import('./licencia/licencia.module').then(m => m.LicenciaModule)
+            },
+            {
+                path: 'reporte',
+                loadChildren: () =>
                     import('./reporte/reporte.module').then(m => m.ReporteModule)
-                },
-                {
-                    path: 'record',
-                    loadChildren: () =>
+            },
+            {
+                path: 'record',
+                loadChildren: () =>
                     import('./record/record.module').then(m => m.RecordModule)
-                },
-                { path: 'general', component: GeneralComponent },
-                { path: 'detalle-licencia', component: DetalleLicenciaComponent},
-                { path: 'tipodocumento', component: TipodocumentoComponent },
+            },
+            { path: 'general', component: GeneralComponent },
+
             /* { path: 'progress', component: ProgressComponent },
             { path: 'grafica1', component: Grafica1Component },
             { path: 'area', component: AreaComponent },
@@ -70,7 +84,7 @@ const routes: Routes = [
             { path: 'historial', component:HistorialComponent}, */
         ],
         canActivateChild: [
-          AdministradorGuard
+            AdministradorGuard
         ]
     },
     //{ path: 'path/:routeParam', component: MyComponent },

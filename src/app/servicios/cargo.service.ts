@@ -12,8 +12,8 @@ export class CargoService {
   private url = `${pathUrl}/cargo`
   constructor(private http:HttpClient, private router:Router) { }
 
-  getCargos(estado:string='1'):Observable<any>{
-    return this.http.get(this.url,{params:{estado}});
+  getCargos(estado:string='1',page:number=1,limit:number=50):Observable<any>{
+    return this.http.get(this.url,{params:{estado,page,limit}});
   }
 
   getCargoId(id:number|string):Observable<any>{

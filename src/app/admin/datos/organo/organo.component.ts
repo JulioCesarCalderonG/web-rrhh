@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { OrganoService } from '../../../servicios/organo.service';
 import { SedeService } from '../../../servicios/sede.service';
-import { Resp, ResultOrgano } from '../../../interfaces/organo-interface';
+import { Organo, ResultOrgano } from '../../../interfaces/organo-interface';
 import { ResultSede } from '../../../interfaces/sede-interface';
+import { ColumnaTabla } from 'src/app/interfaces/columna-tabla';
+import { TableMaterialComponent } from 'src/app/shared/table-material/table-material.component';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-organo',
@@ -12,7 +15,7 @@ import { ResultSede } from '../../../interfaces/sede-interface';
   styleUrls: ['./organo.component.css'],
 })
 export class OrganoComponent implements OnInit {
-  listOrgano?: Resp[];
+  listOrgano?: Organo[];
   listSedes?: Array<any>;
   organoForm: FormGroup;
   organoEditarForm: FormGroup;
@@ -20,6 +23,18 @@ export class OrganoComponent implements OnInit {
   estado: string = '1';
   carga: boolean = false;
   p: number = 1;
+
+  //SHARED TABLA GENERAL
+  columnasPersonal:ColumnaTabla[] = [
+    { campo: 'nombre', titulo: 'Nombre' },
+    { campo: 'sigla', titulo: 'Sigla' },
+    { campo: 'Sede.nombre', titulo: 'Sede' }
+  ];
+  page: number = 1;
+  total:number = 0;
+  pageSize:number = 30;
+
+  @ViewChild(TableMaterialComponent) tabla!: TableMaterialComponent;
 
   constructor(
     private organoService: OrganoService,
@@ -39,11 +54,11 @@ export class OrganoComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.mostrarOrgano();
+    this.mostrarOrgano(0,this.pageSize);
     this.mostrarSede();
   }
 
-  mostrarOrgano() {
+  mostrarOrgano(page:number,limit:number) {
     this.carga = true;
     if (this.carga) {
       Swal.fire({
@@ -55,10 +70,13 @@ export class OrganoComponent implements OnInit {
         },
       });
     }
-    this.organoService.getOrgano(this.estado).subscribe(
+    this.organoService.getOrgano(this.estado,page,limit).subscribe(
       (data: ResultOrgano) => {
-        this.listOrgano = data.resp;
+        //this.listOrgano = data.resp;
         this.carga = false;
+        this.total = data.totalRegistros;
+        //this.pageSize = data.totalPaginas;
+        this.tabla.setData(data.resp);
         if (!this.carga) {
           Swal.close();
         }
@@ -74,6 +92,50 @@ export class OrganoComponent implements OnInit {
     );
   }
 
+  editar(event:Organo){
+     this.organoEditarForm.setValue({
+          nombre: event.nombre,
+          sigla: event.sigla,
+          sede: event.id_sede,
+        });
+        this.ids = event.id;
+  }
+  eliminar(event:Organo){
+     Swal.fire({
+      title: 'Estas seguro?',
+      text:'El Organo sera Eliminado',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, estoy seguro!',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.organoService.deleteOrgano(event.id, 0).subscribe(
+          (data) => {
+            this.mostrarOrgano(0,this.pageSize);
+            Swal.fire(
+              'Eliminado',
+              'Correcto',
+              'success'
+            );
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
+      }
+    });
+    
+  }
+  cambiarPagina(event:PageEvent){
+  this.page = event.pageIndex + 1;
+  this.pageSize = event.pageSize;
+  console.log(this.page,this.pageSize);
+  this.mostrarOrgano(this.page,this.pageSize);  
+  
+  }
   mostrarSede() {
     this.sedeService.getSedes().subscribe(
       (data: ResultSede) => {
@@ -95,7 +157,7 @@ export class OrganoComponent implements OnInit {
       (data) => {
         console.log(data);
         Swal.fire('Registrado!', 'Se registro el organo con exito', 'success');
-        this.mostrarOrgano();
+        this.mostrarOrgano(0,this.pageSize);
         this.cancelar();
       },
       (error) => {
@@ -112,9 +174,8 @@ export class OrganoComponent implements OnInit {
 
     this.organoService.putOrgano(formData, this.ids!).subscribe(
       (data) => {
-        console.log(data);
         Swal.fire('Editado!', 'Se edito el organo con exito', 'success');
-        this.mostrarOrgano();
+        this.mostrarOrgano(0,this.pageSize);
       },
       (error) => {
         console.log(error);
@@ -139,7 +200,7 @@ export class OrganoComponent implements OnInit {
       if (result.isConfirmed) {
         this.organoService.deleteOrgano(id, estado).subscribe(
           (data) => {
-            this.mostrarOrgano();
+            this.mostrarOrgano(0,this.pageSize);
             Swal.fire(
               estado === 1 ? 'Habilitado' : 'Deshabilitado',
               'Correcto',
@@ -157,7 +218,7 @@ export class OrganoComponent implements OnInit {
   mostrarOrganoTipo(event: any) {
     console.log(event.target.value);
     this.estado = event.target.value;
-    this.mostrarOrgano();
+    this.mostrarOrgano(0,this.pageSize);
   }
 
   obtenerOrganoId(id: number) {

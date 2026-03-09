@@ -1,8 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { AreaService } from '../../../servicios/area.service';
 import { DependenciaService } from '../../../servicios/dependencia.service';
+import { ColumnaTabla } from 'src/app/interfaces/columna-tabla';
+import { TableMaterialComponent } from 'src/app/shared/table-material/table-material.component';
+import { ResultArea } from 'src/app/interfaces/area-interface';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-area',
@@ -19,7 +23,17 @@ export class AreaComponent implements OnInit {
   estado: string = '1';
   carga: boolean = false;
   p: number = 1;
+//SHARED TABLA GENERAL
+  columnasPersonal:ColumnaTabla[] = [
+    { campo: 'nombre', titulo: 'nombre' },
+    { campo: 'sigla', titulo: 'sigla' },
+    { campo: 'UnidadOrganica.nombre', titulo: 'Unidad Organica' }
+  ];
+  page: number = 1;
+  total:number = 0;
+  pageSize:number = 30;
 
+  @ViewChild(TableMaterialComponent) tabla!: TableMaterialComponent;
   constructor(
     private areaService: AreaService,
     private dependenciaService: DependenciaService,
@@ -38,11 +52,11 @@ export class AreaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.mostrarAreas();
+    this.mostrarAreas(0,this.pageSize);
     this.mostrarUnidadOrganica();
   }
 
-  mostrarAreas() {
+  mostrarAreas(page:number,limit:number) {
     this.carga = true;
     if (this.carga) {
       Swal.fire({
@@ -55,9 +69,12 @@ export class AreaComponent implements OnInit {
       });
     }
     this.areaService.getAreas(this.estado).subscribe(
-      (data) => {
-        this.listArea = data.resp;
+      (data:ResultArea) => {
+        //this.listArea = data.resp;
         this.carga = false;
+        this.total = data.totalRegistros;
+        //this.pageSize = data.totalPaginas;
+        this.tabla.setData(data.resp);
         if (!this.carga) {
           Swal.close();
         }
@@ -71,7 +88,20 @@ export class AreaComponent implements OnInit {
       }
     );
   }
-
+editar(event:any){
+    console.log(event);
+  }
+  eliminar(event:any){
+    console.log(event);
+    
+  }
+  cambiarPagina(event:PageEvent){
+  this.page = event.pageIndex + 1;
+  this.pageSize = event.pageSize;
+  console.log(this.page,this.pageSize);
+  this.mostrarAreas(this.page,this.pageSize);  
+  
+  }
   mostrarUnidadOrganica() {
     this.dependenciaService.getUnidad().subscribe(
       (data) => {
@@ -94,7 +124,7 @@ export class AreaComponent implements OnInit {
       (data) => {
         console.log(data);
         Swal.fire('Registrado!', 'Se registro el area con exito', 'success');
-        this.mostrarAreas();
+        this.mostrarAreas(0,this.pageSize);
         this.cancelar();
       },
       (error) => {
@@ -116,7 +146,7 @@ export class AreaComponent implements OnInit {
       (data) => {
         console.log(data);
         Swal.fire('Editado!', 'Se edito el area con exito', 'success');
-        this.mostrarAreas();
+        this.mostrarAreas(0,this.pageSize);
       },
       (error) => {
         console.log(error);
@@ -138,7 +168,7 @@ export class AreaComponent implements OnInit {
       if (result.isConfirmed) {
         this.areaService.deleteAreas(id, estado).subscribe(
           (data) => {
-            this.mostrarAreas();
+            this.mostrarAreas(0,this.pageSize);
             Swal.fire(
               estado === 1 ? 'Habilitado' : 'Deshabilitado',
               'Correcto',
@@ -155,7 +185,7 @@ export class AreaComponent implements OnInit {
   mostrarAreaTipo(event: any) {
     console.log(event.target.value);
     this.estado = event.target.value;
-    this.mostrarAreas();
+    this.mostrarAreas(0,this.pageSize);
   }
   obtenerDatosId(id: number) {
     this.areaService.getAreaId(id).subscribe(

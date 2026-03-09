@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
-import { DetalleLicenciaService } from '../../servicios/detalle-licencia.service';
-import { TipoLicenciaService } from '../../servicios/tipo-licencia.service';
+import { DetalleLicenciaService } from '../../../servicios/detalle-licencia.service';
+import { TipoLicenciaService } from '../../../servicios/tipo-licencia.service';
 
 @Component({
   selector: 'app-detalle-licencia',

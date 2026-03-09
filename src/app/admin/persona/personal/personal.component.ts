@@ -6,7 +6,7 @@ import { PersonalService } from '../../../servicios/personal.service';
 import { TableMaterialComponent }
   from '../../../shared/table-material/table-material.component';
 import { ColumnaTabla } from 'src/app/interfaces/columna-tabla';
-import { PersonalResult } from 'src/app/interfaces/result-personal';
+import { Personal, PersonalResult } from 'src/app/interfaces/result-personal';
 import { PageEvent } from '@angular/material/paginator';
 @Component({
   selector: 'app-personal',
@@ -94,12 +94,42 @@ export class PersonalComponent implements OnInit {
     );
   }
 
-  editar(event:any){
-    console.log(event);
+  editar(event:Personal){
+    this.personalEditarForm.setValue({
+          dni: event.dni,
+          nombre: event.nombre,
+          apellido:event.apellido,
+          escalafon: event.escalafon,
+          fecha_inicio: event.fecha_inicio,
+        });
+        this.ids = event.id;
   }
-  eliminar(event:any){
-    console.log(event);
-    
+  eliminar(event:Personal){
+    Swal.fire({
+      title: 'Estas seguro?',
+      text:'El personal sera eliminado',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, estoy seguro!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.personalService.deletePersonal(event.id, 0).subscribe(
+          (data) => {
+            this.mostrarPersonal(0,this.pageSize);
+            Swal.fire(
+              'Eliminado',
+              'Correcto',
+              'success'
+            );
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
+      }
+    });
   }
   cambiarPagina(event:PageEvent){
   this.page = event.pageIndex + 1;
@@ -264,9 +294,11 @@ export class PersonalComponent implements OnInit {
   buscar(event: string) {
     this.inputBuscar = event;
     if (this.inputBuscar.length >= 0) {
-      this.personalService.getPersonal(this.estado, this.inputBuscar).subscribe(
-        (data) => {
-          this.listPersonal = data.resp;
+      this.personalService.getPersonal(this.estado, this.inputBuscar,0,this.pageSize).subscribe(
+        (data:PersonalResult) => {
+          //this.listPersonal = data.resp;
+          this.total = data.totalRegistros;
+        this.tabla.setData(data.resp);
         },
         (error) => {
           console.log(error);

@@ -2,13 +2,10 @@ import { NgModule } from '@angular/core';
 import {RouterModule} from '@angular/router'
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AdminComponent } from './admin.component';
-import { TipodocumentoComponent } from './tipodocumento/tipodocumento.component';
+
 import { GeneralComponent } from './general/general.component';
-import { TipoLicenciaComponent } from './tipo-licencia/tipo-licencia.component';
 import { TipoPersonalComponent } from './tipo-personal/tipo-personal.component';
-import { DetalleLicenciaComponent } from './detalle-licencia/detalle-licencia.component';
 import { HistorialComponent } from './historial/historial.component';
-import { RegimenLaboralComponent } from './persona/regimen-laboral/regimen-laboral.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -33,11 +30,8 @@ import { MatDividerModule } from '@angular/material/divider';
   declarations: [
     DashboardComponent,
     AdminComponent,
-    TipodocumentoComponent,
     GeneralComponent,
-    TipoLicenciaComponent,
     TipoPersonalComponent,
-    DetalleLicenciaComponent,
     HistorialComponent,
     
   ],

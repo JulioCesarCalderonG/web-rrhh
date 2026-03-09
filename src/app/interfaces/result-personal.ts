@@ -4,10 +4,10 @@ export interface PersonalResult {
     totalRegistros: number;
     totalPaginas:   number;
     paginaActual:   number;
-    resp:           Resp[];
+    resp:           Personal[];
 }
 
-export interface Resp {
+export interface Personal {
     id:           number;
     dni:          string;
     nombre:       string;

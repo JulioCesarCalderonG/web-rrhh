@@ -1,38 +1,38 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
-import { TipodocumentoService } from '../../servicios/tipodocumento.service';
+import { TipoLicenciaService } from '../../../servicios/tipo-licencia.service';
 
 @Component({
-  selector: 'app-tipodocumento',
-  templateUrl: './tipodocumento.component.html',
-  styleUrls: ['./tipodocumento.component.css'],
+  selector: 'app-tipo-licencia',
+  templateUrl: './tipo-licencia.component.html',
+  styleUrls: ['./tipo-licencia.component.css'],
 })
-export class TipodocumentoComponent implements OnInit {
-  listTipodocumento?: Array<any>;
-  tipodocumentoform: FormGroup;
-  tipodocumentoEditarform: FormGroup;
+export class TipoLicenciaComponent implements OnInit {
+  listTipolicencia?: Array<any>;
+  tipolicenciaform: FormGroup;
+  tipolicenciaEditarform: FormGroup;
   ids?: string | number;
   estado: string = '1';
   carga: boolean = false;
 
   constructor(
-    private tipodocumentoService: TipodocumentoService,
+    private tipolicenciaService: TipoLicenciaService,
     private fb: FormBuilder
   ) {
-    this.tipodocumentoform = this.fb.group({
-      descripcion: ['', Validators.required],
+    this.tipolicenciaform = this.fb.group({
+      nombre: ['', Validators.required],
     });
-    this.tipodocumentoEditarform = this.fb.group({
-      descripcion: ['', Validators.required],
+    this.tipolicenciaEditarform = this.fb.group({
+      nombre: ['', Validators.required],
     });
   }
 
   ngOnInit(): void {
-    this.mostrartipodocumento();
+    this.mostrarTipolicencia();
   }
 
-  mostrartipodocumento() {
+  mostrarTipolicencia() {
     this.carga = true;
     if (this.carga) {
       Swal.fire({
@@ -45,9 +45,9 @@ export class TipodocumentoComponent implements OnInit {
         },
       });
     }
-    this.tipodocumentoService.getTipodocumento(this.estado).subscribe(
+    this.tipolicenciaService.getTipoLicencia(this.estado).subscribe(
       (data) => {
-        this.listTipodocumento = data.resp;
+        this.listTipolicencia = data.resp;
         this.carga = false;
         if (!this.carga) {
           Swal.close();
@@ -63,22 +63,18 @@ export class TipodocumentoComponent implements OnInit {
     );
   }
 
-  registrarTipodocumento() {
+  registrarTipolicencia() {
     const formData = new FormData();
-    formData.append(
-      'descripcion',
-      this.tipodocumentoform.get('descripcion')?.value
-    );
-
-    this.tipodocumentoService.postTipodocumento(formData).subscribe(
+    formData.append('nombre', this.tipolicenciaform.get('nombre')?.value);
+    this.tipolicenciaService.postTipolicencia(formData).subscribe(
       (data) => {
         console.log(data);
         Swal.fire(
           'Registrado!',
-          'Se registro el tipo licencia con exito',
+          'Se registro el tipo de licencia con exito',
           'success'
         );
-        this.mostrartipodocumento();
+        this.mostrarTipolicencia();
         this.cancelar();
       },
       (error) => {
@@ -87,19 +83,18 @@ export class TipodocumentoComponent implements OnInit {
     );
   }
 
-  editarTipodocumento() {
+  editarTipolicencia() {
     const formData = new FormData();
-
-    formData.append(
-      'descripcion',
-      this.tipodocumentoEditarform.get('descripcion')?.value
-    );
-
-    this.tipodocumentoService.putTipodocumento(formData, this.ids!).subscribe(
+    formData.append('nombre', this.tipolicenciaEditarform.get('nombre')?.value);
+    this.tipolicenciaService.putTipolicencia(formData, this.ids!).subscribe(
       (data) => {
         console.log(data);
-        Swal.fire('Editado!', 'Se edito el tipo licencia con exito', 'success');
-        this.mostrartipodocumento();
+        Swal.fire(
+          'Editado!',
+          'Se edito el tipo de licencia con exito',
+          'success'
+        );
+        this.mostrarTipolicencia();
       },
       (error) => {
         console.log(error);
@@ -107,13 +102,13 @@ export class TipodocumentoComponent implements OnInit {
     );
   }
 
-  eliminarTipodocumento(id: number, estado: number) {
+  eliminarTipolicencia(id: number, estado: number) {
     Swal.fire({
       title: 'Estas seguro?',
       text:
         estado === 1
-          ? 'El tipo de documento sera habilitado'
-          : 'El tipo de documento sera deshabilitado',
+          ? 'El tipo de licencia sera habilitado'
+          : 'El tipo de licencia sera deshabilitado',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -121,9 +116,9 @@ export class TipodocumentoComponent implements OnInit {
       confirmButtonText: 'Si, estoy seguro!',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.tipodocumentoService.deleteTipodocumento(id, estado).subscribe(
+        this.tipolicenciaService.deleteTipolicencia(id, estado).subscribe(
           (data) => {
-            this.mostrartipodocumento();
+            this.mostrarTipolicencia();
             Swal.fire(
               estado === 1 ? 'Habilitado' : 'Deshabilitado',
               'Correcto',
@@ -138,17 +133,17 @@ export class TipodocumentoComponent implements OnInit {
     });
   }
 
-  mostrarTipodocTipo(event: any) {
+  mostrarTipolicTipo(event: any) {
     console.log(event.target.value);
     this.estado = event.target.value;
-    this.mostrartipodocumento();
+    this.mostrarTipolicencia();
   }
 
-  obtenerTipodocumentoId(id: number) {
-    this.tipodocumentoService.getTipodocumentoId(id).subscribe(
+  obtenerTipolicenciaId(id: number) {
+    this.tipolicenciaService.getTipolicenciaId(id).subscribe(
       (data) => {
-        this.tipodocumentoEditarform.setValue({
-          descripcion: data.resp.descripcion,
+        this.tipolicenciaEditarform.setValue({
+          nombre: data.resp.nombre,
         });
         this.ids = data.resp.id;
       },
@@ -159,11 +154,11 @@ export class TipodocumentoComponent implements OnInit {
   }
 
   cancelar() {
-    this.tipodocumentoform.setValue({
-      descripcion: '',
+    this.tipolicenciaform.setValue({
+      nombre: '',
     });
-    this.tipodocumentoEditarform.setValue({
-      descripcion: '',
+    this.tipolicenciaEditarform.setValue({
+      nombre: '',
     });
   }
 }

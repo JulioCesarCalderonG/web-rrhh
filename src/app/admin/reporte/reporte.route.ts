@@ -16,7 +16,7 @@ const routes: Routes = [
             {path:'licencias',component:ReporteLicenciasComponent},
             {path:'vacaciones',component:ReporteVacacionalComponent},
             {path:'merito',component:ReporteMeritoComponent},
-            {path:'laboral',component:ReporteLaboralComponent},
+            {path:'reporte-laboral/:id/:personal',component:ReporteLaboralComponent},
             {path:'reporte',component:ReportesComponent},
         ]
     },

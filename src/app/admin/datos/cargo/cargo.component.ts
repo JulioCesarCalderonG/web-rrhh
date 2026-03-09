@@ -1,8 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { CargoService } from '../../../servicios/cargo.service';
 import { TipoPersonalService } from '../../../servicios/tipo-personal.service';
+import { Cargo, ResultCargo } from 'src/app/interfaces/cargo-interface';
+import { TableMaterialComponent } from 'src/app/shared/table-material/table-material.component';
+import { ColumnaTabla } from 'src/app/interfaces/columna-tabla';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-cargo',
@@ -18,6 +22,17 @@ export class CargoComponent implements OnInit {
   estado: string = '1';
   carga: boolean = false;
   p: number = 1;
+
+  //SHARED TABLA GENERAL
+  columnasPersonal:ColumnaTabla[] = [
+    { campo: 'descripcion', titulo: 'Descripcion' },
+    { campo: 'TipoPersonal.titulo', titulo: 'Tipo personal' }
+  ];
+  page: number = 1;
+  total:number = 0;
+  pageSize:number = 30;
+
+  @ViewChild(TableMaterialComponent) tabla!: TableMaterialComponent;
 
   constructor(
     private cargoService: CargoService,
@@ -35,11 +50,11 @@ export class CargoComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.mostrarCargos();
+    this.mostrarCargos(0, this.pageSize);
     this.mostrarTipoPersonal();
   }
 
-  mostrarCargos() {
+  mostrarCargos(page:number,limit:number) {
     this.carga = true;
     if (this.carga) {
       Swal.fire({
@@ -51,10 +66,13 @@ export class CargoComponent implements OnInit {
         },
       });
     }
-    this.cargoService.getCargos(this.estado).subscribe(
-      (data) => {
-        this.listCargo = data.resp;
+    this.cargoService.getCargos(this.estado, page,limit).subscribe(
+      (data:ResultCargo) => {
+        //this.listCargo = data.resp;
         this.carga = false;
+        this.total = data.totalRegistros;
+        //this.pageSize = data.totalPaginas;
+        this.tabla.setData(data.resp);
         if (!this.carga) {
           Swal.close();
         }
@@ -67,6 +85,50 @@ export class CargoComponent implements OnInit {
         console.log(error);
       }
     );
+  }
+
+  editar(event:Cargo){
+     this.cargoEditarForm.setValue({
+          descripcion: event.descripcion,
+          tipo_personal: event.id_tipo_personal,
+        });
+        this.ids = event.id;
+  }
+  eliminar(event:Cargo){
+     Swal.fire({
+      title: 'Estas seguro?',
+      text: 'El cargo sera eliminado',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, estoy seguro!',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.cargoService.deleteCargo(event.id, 0).subscribe(
+          (data) => {
+            this.mostrarCargos(0,this.pageSize);
+            Swal.fire(
+              'Elimimado',
+              'Correcto',
+              'success'
+            );
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
+      }
+    });
+    
+  }
+  cambiarPagina(event:PageEvent){
+  this.page = event.pageIndex + 1;
+  this.pageSize = event.pageSize;
+  console.log(this.page,this.pageSize);
+  this.mostrarCargos(this.page,this.pageSize);  
+  
   }
 
   mostrarTipoPersonal() {
@@ -92,7 +154,7 @@ export class CargoComponent implements OnInit {
       (data) => {
         console.log(data);
         Swal.fire('Registrado!', 'Se registro el cargo con exito', 'success');
-        this.mostrarCargos();
+        this.mostrarCargos(0,this.pageSize);
         this.cancelar();
       },
       (error) => {
@@ -115,7 +177,7 @@ export class CargoComponent implements OnInit {
       (data) => {
         console.log(data);
         Swal.fire('Editado!', 'Se edito el cargo con exito', 'success');
-        this.mostrarCargos();
+        this.mostrarCargos(0,this.pageSize);
       },
       (error) => {
         console.log(error);
@@ -140,7 +202,7 @@ export class CargoComponent implements OnInit {
       if (result.isConfirmed) {
         this.cargoService.deleteCargo(id, estado).subscribe(
           (data) => {
-            this.mostrarCargos();
+            this.mostrarCargos(0,this.pageSize);
             Swal.fire(
               estado === 1 ? 'Habilitado' : 'Deshabilitado',
               'Correcto',
@@ -158,7 +220,7 @@ export class CargoComponent implements OnInit {
   mostrarCargoTipo(event: any) {
     console.log(event.target.value);
     this.estado = event.target.value;
-    this.mostrarCargos();
+    this.mostrarCargos(0,this.pageSize);
   }
 
   obtenerDatosId(id: number) {
