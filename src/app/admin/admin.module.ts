@@ -3,7 +3,6 @@ import {RouterModule} from '@angular/router'
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AdminComponent } from './admin.component';
 
-import { GeneralComponent } from './general/general.component';
 import { TipoPersonalComponent } from './tipo-personal/tipo-personal.component';
 import { HistorialComponent } from './historial/historial.component';
 import { CommonModule } from '@angular/common';
@@ -30,7 +29,6 @@ import { MatDividerModule } from '@angular/material/divider';
   declarations: [
     DashboardComponent,
     AdminComponent,
-    GeneralComponent,
     TipoPersonalComponent,
     HistorialComponent,
     

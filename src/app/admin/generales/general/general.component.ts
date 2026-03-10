@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
-import { environment } from '../../../environments/environment.prod';
-import { GeneralService } from '../../servicios/general.service';
-import { TipodocumentoService } from '../../servicios/tipodocumento.service';
-import { CargoService } from '../../servicios/cargo.service';
-import { DependenciaService } from '../../servicios/dependencia.service';
-import { OrganoService } from '../../servicios/organo.service';
-import { AreaService } from '../../servicios/area.service';
-import { PersonalService } from '../../servicios/personal.service';
-import { ReporteService } from '../../servicios/reporte.service';
+import { environment } from '../../../../environments/environment.prod';
+import { GeneralService } from '../../../servicios/general.service';
+import { TipodocumentoService } from '../../../servicios/tipodocumento.service';
+import { CargoService } from '../../../servicios/cargo.service';
+import { DependenciaService } from '../../../servicios/dependencia.service';
+import { OrganoService } from '../../../servicios/organo.service';
+import { AreaService } from '../../../servicios/area.service';
+import { PersonalService } from '../../../servicios/personal.service';
+import { ReporteService } from '../../../servicios/reporte.service';
 
 @Component({
   selector: 'app-general',

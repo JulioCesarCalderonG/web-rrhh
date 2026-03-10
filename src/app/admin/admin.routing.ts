@@ -6,7 +6,7 @@ import { AreaComponent } from './datos/area/area.component';
 import { CargoComponent } from './datos/cargo/cargo.component';
 import { DependenciaComponent } from './datos/dependencia/dependencia.component';
 
-import { GeneralComponent } from './general/general.component';
+
 import { TipoLicenciaComponent } from './licencia/tipo-licencia/tipo-licencia.component';
 import { DetalleLicenciaComponent } from './licencia/detalle-licencia/detalle-licencia.component';
 import { HistorialComponent } from './historial/historial.component';
@@ -56,7 +56,12 @@ const routes: Routes = [
                 loadChildren: () =>
                     import('./record/record.module').then(m => m.RecordModule)
             },
-            { path: 'general', component: GeneralComponent },
+            {
+                path: 'general',
+                loadChildren: () =>
+                    import('./generales/generales.module').then(m => m.GeneralesModule)
+            },
+            /* { path: 'general', component: GeneralComponent }, */
 
             /* { path: 'progress', component: ProgressComponent },
             { path: 'grafica1', component: Grafica1Component },
