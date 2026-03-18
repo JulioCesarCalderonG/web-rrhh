@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { environment } from '../../../../environments/environment.prod';
@@ -10,6 +10,9 @@ import { OrganoService } from '../../../servicios/organo.service';
 import { AreaService } from '../../../servicios/area.service';
 import { PersonalService } from '../../../servicios/personal.service';
 import { ReporteService } from '../../../servicios/reporte.service';
+import { ColumnaTabla } from 'src/app/interfaces/columna-tabla';
+import { TableMaterialComponent } from 'src/app/shared/table-material/table-material.component';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-general',
@@ -30,7 +33,7 @@ export class GeneralComponent implements OnInit {
   datobuscar: string = '';
   carga: boolean = false;
   p: number = 1;
-  
+
   url = `${environment.backendUrl}/uploadgeneral/recordlaboral`;
   url2 = `${environment.backendUrl}/reporte/recordlaboral`;
   modelReporte = {
@@ -41,6 +44,21 @@ export class GeneralComponent implements OnInit {
     inicio: '',
     fin: '',
   };
+
+  //SHARED TABLA GENERAL
+  columnasPersonal: ColumnaTabla[] = [
+    { campo: 'codigo_documento', titulo: 'Codigo Documento' },
+    { campo: 'dependencia', titulo: 'Dependencia' },
+    { campo: 'Personal.nombre', titulo: 'Nombre' },
+    { campo: 'Personal.apellido', titulo: 'Apellido' },
+    { campo: 'Cargo.descripcion', titulo: 'Descripcion' },
+    { campo: 'inicio', titulo: 'Desde' },
+    { campo: 'fin', titulo: 'Hasta' }
+  ];
+  page: number = 1;
+  total: number = 0;
+  pageSize: number = 30;
+  @ViewChild(TableMaterialComponent) tabla!: TableMaterialComponent;
 
   constructor(
     private generalService: GeneralService,
@@ -82,13 +100,13 @@ export class GeneralComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.mostrarGeneral();
+    this.mostrarGeneral(0, this.pageSize);
     this.mostrartipodocumento();
     this.mostrarCargos();
     this.mostrarPersonal();
   }
 
-  mostrarGeneral() {
+  mostrarGeneral(page: number, limit: number) {
     this.carga = true;
     if (this.carga) {
       Swal.fire({
@@ -100,10 +118,12 @@ export class GeneralComponent implements OnInit {
         },
       });
     }
-    this.generalService.getGeneral(this.tipofiltro, this.datobuscar).subscribe(
+    this.generalService.getGeneral(this.tipofiltro, this.datobuscar, page, limit).subscribe(
       (data) => {
-        this.listGeneral = data.resp;
         this.carga = false;
+        this.total = data.totalRegistros;
+        this.tabla.setData(data.resp);
+
         if (!this.carga) {
           Swal.close();
         }
@@ -117,7 +137,20 @@ export class GeneralComponent implements OnInit {
       }
     );
   }
+  editar(event: any) {
+    console.log(event);
+  }
+  eliminar(event: any) {
+    console.log(event);
 
+  }
+  cambiarPagina(event: PageEvent) {
+    this.page = event.pageIndex + 1;
+    this.pageSize = event.pageSize;
+    console.log(this.page, this.pageSize);
+    this.mostrarGeneral(this.page, this.pageSize);
+
+  }
   mostrartipodocumento() {
     this.tipodocumentoService.getTipodocumento().subscribe(
       (data) => {
@@ -173,7 +206,6 @@ export class GeneralComponent implements OnInit {
       case '1':
         this.organoService.getOrgano().subscribe(
           (data) => {
-            console.log(data);
             this.listAutoriza = data.resp;
           },
           (error) => {
@@ -184,7 +216,6 @@ export class GeneralComponent implements OnInit {
       case '2':
         this.unidadService.getUnidad().subscribe(
           (data) => {
-            console.log(data);
             this.listAutoriza = data.resp;
           },
           (error) => {
@@ -195,7 +226,6 @@ export class GeneralComponent implements OnInit {
       case '3':
         this.areaService.getAreas().subscribe(
           (data) => {
-            console.log(data);
             this.listAutoriza = data.resp;
           },
           (error) => {
@@ -213,7 +243,6 @@ export class GeneralComponent implements OnInit {
       case '1':
         this.organoService.getOrgano().subscribe(
           (data) => {
-            console.log(data);
             this.listDependencia = data.resp;
           },
           (error) => {
@@ -224,7 +253,6 @@ export class GeneralComponent implements OnInit {
       case '2':
         this.unidadService.getUnidad().subscribe(
           (data) => {
-            console.log(data);
             this.listDependencia = data.resp;
           },
           (error) => {
@@ -235,7 +263,6 @@ export class GeneralComponent implements OnInit {
       case '3':
         this.areaService.getAreas().subscribe(
           (data) => {
-            console.log(data);
             this.listDependencia = data.resp;
           },
           (error) => {
@@ -282,7 +309,7 @@ export class GeneralComponent implements OnInit {
     this.generalService.putGeneral(formData, this.ids!).subscribe(
       (data) => {
         console.log(data);
-        this.mostrarGeneral();
+        this.mostrarGeneral(0, this.pageSize);
       },
       (error) => {
         console.log(error);
@@ -316,12 +343,12 @@ export class GeneralComponent implements OnInit {
   filtrar() {
     if (this.tipofiltro !== '' && this.datobuscar !== '') {
       console.log(this.tipofiltro, this.datobuscar);
-      this.mostrarGeneral();
+      this.mostrarGeneral(0, this.pageSize);
     }
     if (this.tipofiltro === '0') {
       this.tipofiltro = '';
       this.datobuscar = '';
-      this.mostrarGeneral();
+      this.mostrarGeneral(0, this.pageSize);
     }
   }
   tipoFiltro(event: any) {
@@ -396,18 +423,18 @@ export class GeneralComponent implements OnInit {
 
           const urlreport = `${this.url2}/${data.nombre}`;
           window.open(urlreport, '_blank');
-          this.carga= false;
-          if (!this.carga) {
-            Swal.close();
-          }
-        },
-        (error)=>{
           this.carga = false;
           if (!this.carga) {
             Swal.close();
           }
-          console.log(error);
-        }
+        },
+          (error) => {
+            this.carga = false;
+            if (!this.carga) {
+              Swal.close();
+            }
+            console.log(error);
+          }
         );
       }
     } else if (this.modelReporte.tiporeporte === '2') {

@@ -19,8 +19,8 @@ export class GeneralService {
   getGeneralPersonalDni(dni:string):Observable<any>{
     return this.http.get(`${this.url}/personal/dni/${dni}`);
   }
-  getGeneral(tipofiltro:string,dato:string):Observable<any>{
-    return this.http.get(this.url,{params:{tipofiltro,dato}});
+  getGeneral(tipofiltro:string,dato:string,page:number=1,limit:number=50):Observable<any>{
+    return this.http.get(this.url,{params:{tipofiltro,dato,page,limit}});
   }
 
   getGeneralId(id:string|number):Observable<any>{

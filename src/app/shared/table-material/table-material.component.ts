@@ -28,7 +28,9 @@ export class TableMaterialComponent implements OnInit,OnChanges  {
   
   ngOnInit() {
     this.displayedColumns = this.columnas.map(c => c.campo);
+    if (this.tipo != 0) {
     this.displayedColumns.push('acciones');
+  }
   }
 
  /*  ngAfterViewInit() {
