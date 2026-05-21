@@ -12,7 +12,7 @@ export class AreaService {
   private url = `${pathUrl}/area`
   constructor(private http:HttpClient, private router:Router) { }
 
-  getAreas(estado:string="1",page:number=1,limit:number=50):Observable<any>{
+  getAreas(estado:string="1",page:number=1,limit:number=1000):Observable<any>{
     return this.http.get(this.url,{params:{estado,page,limit}});
   }
   getAreaId(id:number|string):Observable<any>{

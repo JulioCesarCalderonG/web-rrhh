@@ -12,7 +12,7 @@ export class OrganoService {
   url=`${pathUrl}/organo`;
   constructor(private http:HttpClient, private router:Router) { }
 
-  getOrgano(estado:string='1',page:number=1,limit:number=50):Observable<any>{
+  getOrgano(estado:string='1',page:number=1,limit:number=1000):Observable<any>{
     return this.http.get(this.url,{params:{estado,page,limit}});
   }
 

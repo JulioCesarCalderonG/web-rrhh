@@ -15,7 +15,7 @@ const routes: Routes = [
         children:[
             {path:'licencias',component:ReporteLicenciasComponent},
             {path:'vacaciones',component:ReporteVacacionalComponent},
-            {path:'merito',component:ReporteMeritoComponent},
+            {path:'reporte-merito/:id/:personal',component:ReporteMeritoComponent},
             {path:'reporte-laboral/:id/:personal',component:ReporteLaboralComponent},
             {path:'reporte',component:ReportesComponent},
         ]
